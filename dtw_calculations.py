@@ -182,7 +182,7 @@ def run_calculations(subject_ids: List[int], proportions: List[float], methods: 
                     # Save results as json
                     try:
                         path = os.path.join(MAIN_PATH, "out")  # add /out to path
-                        path = os.path.join(path, "results")  # add /results to path
+                        path = os.path.join(path, "alignments")  # add /alignments to path
                         path = os.path.join(path, str(method))  # add /method to path
                         path = os.path.join(path, "test=" + str(proportion_test))  # add /test=0.XX to path
                         os.makedirs(path, exist_ok=True)

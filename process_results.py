@@ -6,7 +6,7 @@ import statistics
 # Specify path
 MAIN_PATH = os.path.abspath(os.getcwd())
 OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
-RESULT_PATH = os.path.join(OUT_PATH, "results")  # add /results to path
+ALIGNMENT_PATH = os.path.join(OUT_PATH, "alignments")  # add /alignments to path
 
 
 def load_results(subject_id: int, method: str, proportion_test: float, normalized_data: bool = True):
@@ -19,7 +19,7 @@ def load_results(subject_id: int, method: str, proportion_test: float, normalize
     :return: Dictionary with results
     """
     try:
-        path = os.path.join(RESULT_PATH, str(method))  # add /method to path
+        path = os.path.join(ALIGNMENT_PATH, str(method))  # add /method to path
         path = os.path.join(path, "test=" + str(proportion_test))  # add /test=0.XX to path
 
         if normalized_data:
