@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 MAIN_PATH = os.path.abspath(os.getcwd())
-EDA_PATH = os.path.join(MAIN_PATH, "../out")  # add /out to path
+EDA_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
 EDA_PATH = os.path.join(EDA_PATH, "eda")  # add /eda to path
 
 

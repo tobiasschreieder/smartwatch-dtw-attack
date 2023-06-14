@@ -1,6 +1,7 @@
 from preprocessing.data_preparation import get_subject_list
 from preprocessing.process_results import load_results
 
+from typing import List
 import statistics
 import math
 import copy
@@ -126,19 +127,25 @@ def realistic_rank(overall_ranks, subject_id):
     return realistic_rank
 
 
-def get_realistic_ranks(subject_ids, rank_method, results):
+def get_realistic_ranks(rank_method: str, method: str, proportion_test: float, subject_ids: List[int] = None) \
+        -> List[int]:
     """
     Get list with sorted realistic ranks
-    :param subject_ids: List with subject-ids
     :param rank_method: Specify ranking method ("rank" or "score")
-    :param results: Dictionary with results
+    :param method: Specify method of results ("baseline", "amusement", "stress")
+    :param proportion_test: Specify test-proportion
+    :param subject_ids: List with subject-ids; if None = all subjects are used
     :return: List with sorted realistic ranks
     """
+    if subject_ids is None:
+        subject_ids = SUBJECT_LIST
+
     real_ranks = list()
-    for i in subject_ids:
+    for subject in subject_ids:
+        results = load_results(subject_id=subject, method=method, proportion_test=proportion_test)
         overall_ranks, individual_ranks = run_calculate_ranks(results, rank_method)
 
-        real_rank = realistic_rank(overall_ranks, i)
+        real_rank = realistic_rank(overall_ranks, subject)
         real_ranks.append(real_rank)
 
     return sorted(real_ranks)

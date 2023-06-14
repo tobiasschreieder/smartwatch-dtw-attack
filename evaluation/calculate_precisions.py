@@ -1,5 +1,5 @@
 from preprocessing.data_preparation import get_subject_list
-from calculate_ranks import run_calculate_ranks, realistic_rank, get_realistic_ranks_combinations
+from evaluation.calculate_ranks import run_calculate_ranks, realistic_rank, get_realistic_ranks_combinations
 from preprocessing.process_results import load_results
 
 from typing import List
@@ -9,7 +9,7 @@ import os
 
 # Specify path
 MAIN_PATH = os.path.abspath(os.getcwd())
-OUT_PATH = os.path.join(MAIN_PATH, "../out")  # add /out to path
+OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
 PRECISION_PATH = os.path.join(OUT_PATH, "precision")  # add /precision to path
 
 SUBJECT_LIST = get_subject_list()

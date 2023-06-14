@@ -1,15 +1,16 @@
 from evaluation.calculate_precisions import calculate_max_precision
-from evaluation.calculate_ranks import run_calculate_ranks
-from preprocessing.data_preparation import get_subject_list
+from evaluation.calculate_ranks import run_calculate_ranks, get_realistic_ranks
 from evaluation.create_md_tables import create_md_distances, create_md_ranks
+from preprocessing.data_preparation import get_subject_list
 from preprocessing.process_results import load_results
 
 from typing import List
 import os
+import matplotlib.pyplot as plt
 
 
 MAIN_PATH = os.path.abspath(os.getcwd())
-OUT_PATH = os.path.join(MAIN_PATH, "../out")  # add /out to path
+OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
 SUBJECT_PLOT_PATH = os.path.join(OUT_PATH, "subject-plots")
 
 
@@ -28,11 +29,29 @@ def run_calculate_max_precision(k_list: List[int], methods: List[str], proportio
                 calculate_max_precision(k=k, step_width=step_width, method=method, proportion_test=proportion_test)
 
 
-def subject_evaluation(methods: List[str], proportions_test: List[float], subject_list=None):
+def plot_realistic_ranks(path: os.path, method: str, proportion_test:float):
+    """
+    Plot and save realistic-rank-plot
+    :param path: Path to save boxplot
+    :param method: Specify method of results ("baseline", "amusement", "stress")
+    :param proportion_test: Specify test-proportion
+    """
+    real_ranks_1 = get_realistic_ranks(rank_method="rank", method=method, proportion_test=proportion_test)
+    real_ranks_2 = get_realistic_ranks(rank_method="score", method=method, proportion_test=proportion_test)
+
+    real_ranks = [real_ranks_1, real_ranks_2]
+    fig1, ax1 = plt.subplots()
+    ax1.set_title('Rank boxplot')
+    ax1.boxplot(real_ranks, notch=False)
+    plt.savefig(fname=path)
+
+
+def subject_evaluation(methods: List[str], proportions_test: List[float], plot_ranks: bool = True, subject_list=None):
     """
     Create distance and rank-table for each subject
     :param methods: List with methods ("baseline", "amusement", "stress")
     :param proportions_test: List with test-proportions
+    :param plot_ranks: If True: realistic ranks will be plotted and saved
     :param subject_list: Specify subject-ids if None: all subjects are used
     """
     if subject_list is None:
@@ -73,6 +92,14 @@ def subject_evaluation(methods: List[str], proportions_test: List[float], subjec
 
             print("SW-DTW subject-plot for method = " + str(method) + "and test-proportion = " + str(proportion_test) +
                   " saved at: " + str(path))
+
+            # Plot realistic ranks as boxplot
+            if plot_ranks:
+                plot_realistic_ranks(path=path + "/SW-DTW_realistic-rank-plot_" + str(method) + "_" +
+                                     str(proportion_test) + ".png", method=method, proportion_test=proportion_test)
+
+            print("SW-DTW realistic-rank-plot for method = " + str(method) + "and test-proportion = " +
+                  str(proportion_test) + " saved at: " + str(path))
 
 
 

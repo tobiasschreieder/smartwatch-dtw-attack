@@ -8,9 +8,7 @@ import json
 
 
 MAIN_PATH = os.path.abspath(os.getcwd())
-DATA_PATH = os.path.join(MAIN_PATH, "../dataset")  # add /dataset to path
-
-DATA_DICT = load_dataset()  # read data_dict
+DATA_PATH = os.path.join(MAIN_PATH, "dataset")  # add /dataset to path
 
 
 def create_subject_data(method: str, proportion_test: float, subject_id: int) \
@@ -97,11 +95,13 @@ def test_max_proportions(proportions: List[float], safety_proportion: float = 0.
     :param safety_proportion:
     :return: Boolean -> False if there is at least one wrong proportion
     """
+    data_dict = load_dataset()  # read data_dict
+
     # Calculate max_proportion
     min_method_length = 0
     min_overall_length = 0
 
-    for subject, data in DATA_DICT.items():
+    for subject, data in data_dict.items():
         if min_overall_length == 0 or len(data) < min_overall_length:
             min_overall_length = len(data)
 
