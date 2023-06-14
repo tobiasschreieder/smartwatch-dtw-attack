@@ -14,6 +14,7 @@ PRECISION_PATH = os.path.join(OUT_PATH, "precision")  # add /precision to path
 
 SUBJECT_LIST = get_subject_list()
 
+
 def calculate_precision(subject_ids: List[int], k: int, rank_method: str, method: str, proportion_test: float) -> float:
     """
     Calculate precision@k scores

@@ -251,7 +251,6 @@ def run_calculate_ranks_combinations(results, rank_method, combinations, weights
     :param weights: Specify weights for ranking method "max"
     :return: Dictionary with ranking results
     """
-
     def list_to_string(input_list):
         """
         Get string for possible sensor-name combinations
