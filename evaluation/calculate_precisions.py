@@ -39,7 +39,7 @@ def calculate_precision(subject_ids: List[int], k: int, rank_method: str, method
     return precision
 
 
-def calculate_precision_combinations(realistic_ranks_comb, k):
+def calculate_precision_combinations(realistic_ranks_comb, k: int):
     """
     Calculate precision@k scores for sensor combinations
     :param realistic_ranks_comb: Dictionary with rank combinations

@@ -1,6 +1,6 @@
 from evaluation.calculate_precisions import calculate_max_precision
 from evaluation.calculate_ranks import run_calculate_ranks, get_realistic_ranks
-from evaluation.create_md_tables import create_md_distances, create_md_ranks
+from evaluation.create_md_tables import create_md_distances, create_md_ranks, create_md_precision_combinations
 from preprocessing.data_preparation import get_subject_list
 from preprocessing.process_results import load_results
 
@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 
 MAIN_PATH = os.path.abspath(os.getcwd())
 OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
-SUBJECT_PLOT_PATH = os.path.join(OUT_PATH, "subject-plots")
+SUBJECT_PLOT_PATH = os.path.join(OUT_PATH, "subject-plots")  # add /subject-plots to path
+PRECISION_PATH = os.path.join(OUT_PATH, "precision")  # ass /precision to path
 
 
 def run_calculate_max_precision(k_list: List[int], methods: List[str], proportions_test: List[float],
@@ -98,9 +99,40 @@ def subject_evaluation(methods: List[str], proportions_test: List[float], plot_r
                 plot_realistic_ranks(path=path + "/SW-DTW_realistic-rank-plot_" + str(method) + "_" +
                                      str(proportion_test) + ".png", method=method, proportion_test=proportion_test)
 
-            print("SW-DTW realistic-rank-plot for method = " + str(method) + "and test-proportion = " +
+            print("SW-DTW realistic-rank-plot for method = " + str(method) + " and test-proportion = " +
                   str(proportion_test) + " saved at: " + str(path))
 
+
+def precision_evaluation(methods: List[str], proportions_test=List[float], k_list: List[int] = None):
+    """
+    Evaluate DTW alignments with precision@k
+    :param methods: List with methods ("baseline", "amusement", "stress")
+    :param proportions_test: List with test-proportions
+    :param k_list: Specify k parameters in precision table; if None: all k [1 - len(subjects)] are shown
+    """
+    for method in methods:
+        for proportion_test in proportions_test:
+            text = list()
+            text.append("# Evaluation with precision@k")
+            text.append("* method: " + str(method))
+            text.append("* test-proportion: " + str(proportion_test))
+            text.append(create_md_precision_combinations(rank_method="rank", method=method,
+                                                         proportion_test=proportion_test, k_list=k_list))
+            text.append(create_md_precision_combinations(rank_method="score", method=method,
+                                                         proportion_test=proportion_test, k_list=k_list))
+
+            # Save MD-File
+            path = os.path.join(PRECISION_PATH, method)
+            path = os.path.join(path, "test=" + str(proportion_test))
+            os.makedirs(path, exist_ok=True)
+
+            path_string = "/SW-DTW_precision-plot_" + str(method) + "_" + str(proportion_test) + ".md"
+            with open(path + path_string, 'w') as outfile:
+                for item in text:
+                    outfile.write("%s\n" % item)
+
+            print("SW-DTW precision-plot for method = " + str(method) + " and test-proportion = " + str(proportion_test)
+                  + " saved at: " + str(path))
 
 
 
