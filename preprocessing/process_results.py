@@ -5,8 +5,8 @@ import statistics
 
 # Specify path
 MAIN_PATH = os.path.abspath(os.getcwd())
-OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
-ALIGNMENT_PATH = os.path.join(OUT_PATH, "alignments")  # add /alignments to path
+OUT_PATH = os.path.join(MAIN_PATH, "../out")  # add /out to path
+ALIGNMENT_PATH = os.path.join(OUT_PATH, "../alignments")  # add /alignments to path
 
 
 def load_results(subject_id: int, method: str, proportion_test: float, normalized_data: bool = True):

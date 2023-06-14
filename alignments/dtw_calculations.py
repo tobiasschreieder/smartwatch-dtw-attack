@@ -1,4 +1,4 @@
-from data_preparation import load_dataset
+from preprocessing.data_preparation import load_dataset
 
 from typing import Dict, Tuple, List
 import pandas as pd
@@ -8,7 +8,7 @@ import json
 
 
 MAIN_PATH = os.path.abspath(os.getcwd())
-DATA_PATH = os.path.join(MAIN_PATH, "dataset")  # add /dataset to path
+DATA_PATH = os.path.join(MAIN_PATH, "../dataset")  # add /dataset to path
 
 DATA_DICT = load_dataset()  # read data_dict
 
@@ -181,8 +181,8 @@ def run_calculations(subject_ids: List[int], proportions: List[float], methods: 
 
                     # Save results as json
                     try:
-                        path = os.path.join(MAIN_PATH, "out")  # add /out to path
-                        path = os.path.join(path, "alignments")  # add /alignments to path
+                        path = os.path.join(MAIN_PATH, "../out")  # add /out to path
+                        path = os.path.join(path, "")  # add /alignments to path
                         path = os.path.join(path, str(method))  # add /method to path
                         path = os.path.join(path, "test=" + str(proportion_test))  # add /test=0.XX to path
                         os.makedirs(path, exist_ok=True)

@@ -1,15 +1,15 @@
-from calculate_precisions import calculate_max_precision
-from calculate_ranks import run_calculate_ranks
-from data_preparation import get_subject_list
-from create_md_tables import create_md_distances, create_md_ranks
-from process_results import load_results
+from evaluation.calculate_precisions import calculate_max_precision
+from evaluation.calculate_ranks import run_calculate_ranks
+from preprocessing.data_preparation import get_subject_list
+from evaluation.create_md_tables import create_md_distances, create_md_ranks
+from preprocessing.process_results import load_results
 
 from typing import List
 import os
 
 
 MAIN_PATH = os.path.abspath(os.getcwd())
-OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
+OUT_PATH = os.path.join(MAIN_PATH, "../out")  # add /out to path
 SUBJECT_PLOT_PATH = os.path.join(OUT_PATH, "subject-plots")
 
 

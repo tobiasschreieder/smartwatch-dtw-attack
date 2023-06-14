@@ -1,5 +1,5 @@
-from data_preparation import get_subject_list
-from process_results import load_results
+from preprocessing.data_preparation import get_subject_list
+from preprocessing.process_results import load_results
 
 import statistics
 import math

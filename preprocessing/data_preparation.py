@@ -7,7 +7,7 @@ import scipy.signal
 
 # Specify path
 DATA_PATH = os.path.abspath(os.getcwd())
-DATA_PATH = os.path.join(DATA_PATH, "dataset")  # add /dataset to path
+DATA_PATH = os.path.join(DATA_PATH, "../dataset")  # add /dataset to path
 
 # List with all available subject_ids
 SUBJECT_LIST = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17]
