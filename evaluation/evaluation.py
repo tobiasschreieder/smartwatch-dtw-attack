@@ -133,6 +133,3 @@ def precision_evaluation(methods: List[str], proportions_test=List[float], k_lis
 
             print("SW-DTW precision-plot for method = " + str(method) + " and test-proportion = " + str(proportion_test)
                   + " saved at: " + str(path))
-
-
-

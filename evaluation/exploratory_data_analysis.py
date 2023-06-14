@@ -30,6 +30,3 @@ def plot_subject_data():
             print("FileNotFoundError: Invalid directory structure!")
 
         plt.close()
-
-
-
