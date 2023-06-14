@@ -1,8 +1,8 @@
-from preprocessing.data_preparation import load_dataset
+from preprocessing.data_preparation import load_dataset, get_subject_list
 
 from typing import Dict, Tuple, List
 import pandas as pd
-import dtw
+from dtw import *
 import os
 import json
 
@@ -147,7 +147,7 @@ def calculate_alignment(subject_id: int, method: str, proportion_test: float) \
             test = subject_data["test"][subject_id][sensor]
             train = subject_data["train"][subject][sensor]
 
-            alignment = dtw.dtw(train, test, keep_internals=False)
+            alignment = dtw(train, test, keep_internals=False)
             distance_normalized = alignment.normalizedDistance
             distance_standard = alignment.distance
 
@@ -157,13 +157,16 @@ def calculate_alignment(subject_id: int, method: str, proportion_test: float) \
     return results_normalized, results_standard
 
 
-def run_calculations(subject_ids: List[int], proportions: List[float], methods: List[str]):
+def run_calculations(proportions: List[float], methods: List[str], subject_ids: List[int] = None):
     """
     Run DTW-Calculations with all given Parameters and save results as json
-    :param subject_ids: List with all subjects that should be used as test subjects (int)
     :param proportions: List with all test proportions that should be used (float)
-    :param methods:  List with all method that should be used -> baseline / amusement / stress (str)
+    :param methods:  List with all method that should be used -> "baseline" / "amusement" / "stress" (str)
+    :param subject_ids: List with all subjects that should be used as test subjects (int) -> None = all subjects
     """
+    if subject_ids is None:
+        subject_ids = get_subject_list()
+
     if test_max_proportions(proportions=proportions):
         print("Test proportion test successful: All proportions are valid")
 
