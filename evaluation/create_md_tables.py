@@ -1,8 +1,9 @@
 from evaluation.calculate_precisions import calculate_precision_combinations
 from evaluation.calculate_ranks import get_realistic_ranks_combinations
+from preprocessing.data_preparation import get_sensor_combinations
 from preprocessing.data_preparation import get_subject_list
 
-from typing import List
+from typing import List, Dict
 
 
 def bold_minimums(value, sensor: str, results):
@@ -123,9 +124,7 @@ def create_md_precision_combinations(rank_method: str, method: str, proportion_t
     if subject_ids is None:
         subject_ids = get_subject_list()
 
-    sensor_combinations = [["bvp"], ["eda"], ["acc"], ["temp"], ["bvp", "eda"], ["bvp", "temp"], ["eda", "acc"],
-                           ["eda", "temp"], ["acc", "temp"], ["bvp", "eda", "acc"], ["bvp", "eda", "temp"],
-                           ["bvp", "acc", "temp"], ["eda", "acc", "temp"], ["bvp", "eda", "acc", "temp"]]
+    sensor_combinations = get_sensor_combinations()
 
     text = "### Precision@k table combinations (method: " + rank_method + ")" + "\n"
 
@@ -160,3 +159,32 @@ def create_md_precision_combinations(rank_method: str, method: str, proportion_t
             text += "\n"
 
     return text
+
+
+def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], decision_k: int = 1) -> str:
+    """
+    Create text for MD-file with results of rank-method evaluation
+    :param decision_k: Specify k to choose best rank-method
+    :param results: results with precision values
+    :return: String with MD text
+    """
+    text = "# Evaluation of Rank-Methods: \n"
+
+    try:
+        if results[decision_k]["score"] > results[decision_k]["rank"]:
+            text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'rank' \n"
+        else:
+            text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'score' \n"
+    except KeyError:
+        print("Please specify a valid decision-k!")
+
+    text += "## Precision@k table: \n"
+    text += "| k | rank | score | mean |" + "\n"
+    text += "|---|---|---|---|" + "\n"
+
+    for k in results:
+        text += "| " + str(k) + " | " + str(results[k]["rank"]) + " | " + str(results[k]["score"]) + " | " + \
+                str(results[k]["mean"]) + " |" + "\n"
+
+    return text
+

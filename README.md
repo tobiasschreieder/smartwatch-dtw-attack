@@ -18,3 +18,6 @@ Please download the WESAD dataset from https://uni-siegen.sciebo.de/s/HGdUkoNlW1
 
 5. Evaluation DTW-alignment results overall mit precision@k; save MD-tables with precision values
 * precision_evaluation(methods=["baseline", "amusement", "stress"], proportions_test=[0.01, 0.02, 0.05, 0.1])
+
+6. Evaluation of rank-method; save precision@k values as MD-table
+* run_rank_method_evaluation()

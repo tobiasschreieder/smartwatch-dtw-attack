@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 MAIN_PATH = os.path.abspath(os.getcwd())
 OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
 SUBJECT_PLOT_PATH = os.path.join(OUT_PATH, "subject-plots")  # add /subject-plots to path
-PRECISION_PATH = os.path.join(OUT_PATH, "precision")  # ass /precision to path
+PRECISION_PATH = os.path.join(OUT_PATH, "precision")  # add /precision to path
 
 
 def run_calculate_max_precision(k_list: List[int], methods: List[str], proportions_test: List[float],

@@ -12,13 +12,17 @@ DATA_PATH = os.path.join(MAIN_PATH, "dataset")  # add /dataset to path
 # List with all available subject_ids
 SUBJECT_LIST = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17]
 
+# List with all sensor combinations
+SENSOR_COMBINATIONS = [["bvp"], ["eda"], ["acc"], ["temp"], ["bvp", "eda"], ["bvp", "temp"], ["eda", "acc"],
+                       ["eda", "temp"], ["acc", "temp"], ["bvp", "eda", "acc"], ["bvp", "eda", "temp"],
+                       ["bvp", "acc", "temp"], ["eda", "acc", "temp"], ["bvp", "eda", "acc", "temp"]]
+
 
 class Subject:
     """
     Subject of the WESAD dataset.
     Subject Class inspired by: https://github.com/WJMatthew/WESAD
     """
-
     def __init__(self, data_path, subject_number):
         """
         Load WESAD dataset
@@ -126,3 +130,11 @@ def get_subject_list() -> List[int]:
     :return: List with subject-ids
     """
     return SUBJECT_LIST
+
+
+def get_sensor_combinations() -> List[List[str]]:
+    """
+    Get sensor-combinations
+    :return: sensor-combinations
+    """
+    return SENSOR_COMBINATIONS

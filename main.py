@@ -2,7 +2,7 @@ from evaluation.exploratory_data_analysis import plot_subject_data
 from preprocessing.data_preparation import preprocess_data
 from alignments.dtw_calculations import run_calculations
 from evaluation.evaluation import subject_evaluation, precision_evaluation
-
+from evaluation.optimization.rank_method_evaluation import run_rank_method_evaluation
 
 """
 Example Calculations
@@ -23,4 +23,8 @@ to /out/subject-plots"""
 # subject_evaluation(methods=["baseline", "amusement", "stress"], proportions_test=[0.01, 0.02, 0.05, 0.1])
 
 """5. Evaluation DTW-alignment results overall mit precision@k; save MD-tables with precision values"""
-# precision_evaluation(methods=["baseline", "amusement", "stress"], proportions_test=[0.01, 0.02, 0.05, 0.1])
+# precision_evaluation(methods=["baseline", "amusement", "stress"], proportions_test=[0.01, 0.02, 0.05, 0.1],
+#                      k_list=[1, 3, 5])
+
+"""6. Evaluation of rank-method; save precision@k values as MD-table"""
+# run_rank_method_evaluation()

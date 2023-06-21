@@ -10,6 +10,25 @@ import json
 MAIN_PATH = os.path.abspath(os.getcwd())
 DATA_PATH = os.path.join(MAIN_PATH, "dataset")  # add /dataset to path
 
+CLASSES = ["baseline", "amusement", "stress"]
+PROPORTIONS_TEST = [0.01, 0.02, 0.05, 0.1]
+
+
+def get_classes() -> List[str]:
+    """
+    Get classes ("baseline", "amusement", "stress")
+    :return: List with all classes
+    """
+    return CLASSES
+
+
+def get_proportions() -> List[float]:
+    """
+    Get test-proportions
+    :return: List with all test-poportions
+    """
+    return PROPORTIONS_TEST
+
 
 def create_subject_data(method: str, proportion_test: float, subject_id: int) \
         -> Tuple[Dict[str, Dict[int, Dict[str, pd.DataFrame]]], Dict[int, Dict[str, int]]]:
