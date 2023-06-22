@@ -24,3 +24,6 @@ Please download the WESAD dataset from https://uni-siegen.sciebo.de/s/HGdUkoNlW1
 
 7. Evaluation of classes, save precision@k values as MD-table
 * run_class_evaluation(rank_method="score")
+
+8. Evaluation of sensor-combinations, save precision@k values as MD-table
+* run_sensor_evaluation(rank_method="score", average_method="weighted-mean")

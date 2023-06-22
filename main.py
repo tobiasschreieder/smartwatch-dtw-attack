@@ -29,10 +29,10 @@ to /out/subject-plots"""
 #                      k_list=[1, 3, 5])
 
 """6. Evaluation of rank-method; save precision@k values as MD-table"""
-run_rank_method_evaluation()
+# run_rank_method_evaluation()
 
 """7. Evaluation of classes, save precision@k values as MD-table"""
-run_class_evaluation(rank_method="score")
+# run_class_evaluation(rank_method="score")
 
 """8. Evaluation of sensor-combinations, save precision@k values as MD-table"""
-run_sensor_evaluation(rank_method="score", average_method="weighted-mean")
+# run_sensor_evaluation(rank_method="score", average_method="weighted-mean")
