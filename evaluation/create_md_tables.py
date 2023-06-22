@@ -173,7 +173,7 @@ def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], decisi
     try:
         if results[decision_k]["score"] > results[decision_k]["rank"]:
             text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'score' \n"
-        elif results[decision_k]["score"] > results[decision_k]["rank"]:
+        elif results[decision_k]["score"] < results[decision_k]["rank"]:
             text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'rank' \n"
         else:
             text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'rank' or 'score' \n"
@@ -192,17 +192,30 @@ def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], decisi
 
 
 def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, float]],
-                                average_results: Dict[int, float], weighted_average_results: Dict[int, float]):
+                                average_results: Dict[int, float], weighted_average_results: Dict[int, float],
+                                decision_k: int = 1):
     """
     Create text for MD-file with results of class evaluation
     :param rank_method: Specify rank-method ("score" or "rank")
     :param results: Results with precision values per class
     :param average_results: Results with average precision values
     :param weighted_average_results: Results with weighted average precision values
+    :param decision_k: Specify k to choose best rank-method
     :return: String with MD text
     """
     text = "# Evaluation of Classes: \n"
     text += "* Calculated with rank_method: " + str(rank_method) + "\n"
+
+    try:
+        if average_results[decision_k] > weighted_average_results[decision_k]:
+            text += "* Preferred class averaging method for k = " + str(decision_k) + ": 'mean' \n"
+        elif average_results[decision_k] < weighted_average_results[decision_k]:
+            text += "* Preferred class averaging method for k = " + str(decision_k) + ": 'weighted mean' \n"
+        else:
+            text += "* Preferred class averaging method for k = " + str(decision_k) + ": 'mean' or 'weighted mean' \n"
+    except KeyError:
+        print("Please specify a valid decision-k!")
+
     text += "## Evaluation per Class: \n"
     text += "### Precision@k table: \n"
     text += "| k | baseline | amusement | stress |" + "\n"
