@@ -21,3 +21,6 @@ Please download the WESAD dataset from https://uni-siegen.sciebo.de/s/HGdUkoNlW1
 
 6. Evaluation of rank-method; save precision@k values as MD-table
 * run_rank_method_evaluation()
+
+7. Evaluation of classes, save precision@k values as MD-table
+* run_class_evaluation(rank_method="score")

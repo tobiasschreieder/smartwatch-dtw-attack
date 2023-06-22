@@ -3,6 +3,7 @@ from preprocessing.data_preparation import preprocess_data
 from alignments.dtw_calculations import run_calculations
 from evaluation.evaluation import subject_evaluation, precision_evaluation
 from evaluation.optimization.rank_method_evaluation import run_rank_method_evaluation
+from evaluation.optimization.class_evaluation import run_class_evaluation
 
 """
 Example Calculations
@@ -28,3 +29,6 @@ to /out/subject-plots"""
 
 """6. Evaluation of rank-method; save precision@k values as MD-table"""
 # run_rank_method_evaluation()
+
+"""7. Evaluation of classes, save precision@k values as MD-table"""
+# run_class_evaluation(rank_method="score")

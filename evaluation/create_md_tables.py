@@ -164,8 +164,8 @@ def create_md_precision_combinations(rank_method: str, method: str, proportion_t
 def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], decision_k: int = 1) -> str:
     """
     Create text for MD-file with results of rank-method evaluation
+    :param results: Results with precision values
     :param decision_k: Specify k to choose best rank-method
-    :param results: results with precision values
     :return: String with MD text
     """
     text = "# Evaluation of Rank-Methods: \n"
@@ -187,6 +187,38 @@ def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], decisi
     for k in results:
         text += "| " + str(k) + " | " + str(results[k]["rank"]) + " | " + str(results[k]["score"]) + " | " + \
                 str(results[k]["mean"]) + " |" + "\n"
+
+    return text
+
+
+def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, float]],
+                                average_results: Dict[int, float], weighted_average_results: Dict[int, float]):
+    """
+    Create text for MD-file with results of class evaluation
+    :param rank_method: Specify rank-method ("score" or "rank")
+    :param results: Results with precision values per class
+    :param average_results: Results with average precision values
+    :param weighted_average_results: Results with weighted average precision values
+    :return: String with MD text
+    """
+    text = "# Evaluation of Classes: \n"
+    text += "* Calculated with rank_method: " + str(rank_method) + "\n"
+    text += "## Evaluation per Class: \n"
+    text += "### Precision@k table: \n"
+    text += "| k | baseline | amusement | stress |" + "\n"
+    text += "|---|---|---|---|" + "\n"
+
+    for k in results:
+        text += "| " + str(k) + " | " + str(results[k]["baseline"]) + " | " + str(results[k]["amusement"]) + " | " + \
+                str(results[k]["stress"]) + " |" + "\n"
+
+    text += "## Overall Evaluation: \n"
+    text += "### Precision@k table: \n"
+    text += "| k | mean | weighted mean |" + "\n"
+    text += "|---|---|---|" + "\n"
+
+    for k in average_results:
+        text += "| " + str(k) + " | " + str(average_results[k]) + " | " + str(weighted_average_results[k]) + " |" + "\n"
 
     return text
 
