@@ -31,4 +31,8 @@ to /out/subject-plots"""
 # run_rank_method_evaluation()
 
 """7. Evaluation of classes, save precision@k values as MD-table"""
-run_class_evaluation(rank_method="score")
+# run_class_evaluation(rank_method="score")
+
+
+from evaluation.optimization.sensor_evaluation import calculate_sensor_precisions
+calculate_sensor_precisions()

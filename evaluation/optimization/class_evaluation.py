@@ -73,7 +73,7 @@ def calculate_class_precisions(rank_method: str = "score", subject_ids: List = N
                                                                         method=method,
                                                                         proportion_test=proportion_test,
                                                                         subject_ids=subject_ids)
-                # Calculate precision values with rank-method "score"
+                # Calculate precision values with specified rank-method
                 precision_comb = calculate_precision_combinations(realistic_ranks_comb=realistic_ranks_comb, k=k)
 
                 # Calculate mean over precision-values per sensor-combinations for specified rank-method
