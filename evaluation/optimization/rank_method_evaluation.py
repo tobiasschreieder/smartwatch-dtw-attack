@@ -114,7 +114,7 @@ def run_rank_method_evaluation():
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)
 
-    path_string = "/SW-DTW_evaluations_rank_methods.md"
+    path_string = "/SW-DTW_evaluation_rank_methods.md"
     with open(EVALUATIONS_PATH + path_string, 'w') as outfile:
         for item in text:
             outfile.write("%s\n" % item)

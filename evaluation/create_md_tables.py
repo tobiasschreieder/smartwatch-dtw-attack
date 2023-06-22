@@ -172,9 +172,11 @@ def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], decisi
 
     try:
         if results[decision_k]["score"] > results[decision_k]["rank"]:
+            text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'score' \n"
+        elif results[decision_k]["score"] > results[decision_k]["rank"]:
             text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'rank' \n"
         else:
-            text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'score' \n"
+            text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'rank' or 'score' \n"
     except KeyError:
         print("Please specify a valid decision-k!")
 
