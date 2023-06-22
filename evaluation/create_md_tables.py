@@ -193,7 +193,7 @@ def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], decisi
 
 def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, float]],
                                 average_results: Dict[int, float], weighted_average_results: Dict[int, float],
-                                decision_k: int = 1):
+                                decision_k: int = 1) -> str:
     """
     Create text for MD-file with results of class evaluation
     :param rank_method: Specify rank-method ("score" or "rank")
@@ -204,7 +204,7 @@ def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, f
     :return: String with MD text
     """
     text = "# Evaluation of Classes: \n"
-    text += "* Calculated with rank_method: " + str(rank_method) + "\n"
+    text += "* Calculated with rank-method: '" + str(rank_method) + "' \n"
 
     try:
         if average_results[decision_k] > weighted_average_results[decision_k]:
@@ -235,3 +235,52 @@ def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, f
 
     return text
 
+
+def create_md_precision_sensors(rank_method: str, average_method: str, results: Dict[int, Dict[str, float]],
+                                decision_k: int = 1) -> str:
+    """
+    Create text for MD-file with results of sensor-combination evaluation
+    :param rank_method: Specify rank-method ("score" or "rank")
+    :param average_method: Specify averaging-method ("mean" or "weighted-mean)
+    :param results: Results with precision values per class
+    :param decision_k: Specify k to choose best rank-method
+    :return: String with MD text
+    """
+    def get_best_sensor(res: Dict[int, Dict[str, float]], dec_k: int = 1) -> str:
+        """
+        Get best sensor-combinations for specified k
+        :param res: Dictionary with sensor precision results
+        :param dec_k: Specify k to choose best rank-method
+        :return: best sensor-combination
+        """
+        best_sensor = str
+        best_precision = 0.0
+        for sens, pre in res[dec_k].items():
+            if pre > best_precision:
+                best_precision = pre
+                best_sensor = sens
+
+        return best_sensor
+
+    text = "# Evaluation of Sensor-Combinations: \n"
+    text += "* Calculated with rank_method: '" + str(rank_method) + "' \n"
+    text += "* Calculated with averaging-method: '" + str(average_method) + "' \n"
+    text += "* Preferred sensor-combination for k = " + str(decision_k) + ": '" + \
+            str(get_best_sensor(res=results, dec_k=decision_k)) + "' \n"
+
+    text += "## Precision@k table: \n"
+    text += "| k |"
+    separator = "|---|"
+    for sensor in results[decision_k]:
+        text += str(sensor) + " | "
+        separator += "---|"
+    text += "\n"
+    text += separator + "\n"
+
+    for k in results:
+        text += "| " + str(k) + " | "
+        for sensor in results[k]:
+            text += str(results[k][sensor]) + " | "
+        text += "\n"
+
+    return text

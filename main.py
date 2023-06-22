@@ -4,6 +4,7 @@ from alignments.dtw_calculations import run_calculations
 from evaluation.evaluation import subject_evaluation, precision_evaluation
 from evaluation.optimization.rank_method_evaluation import run_rank_method_evaluation
 from evaluation.optimization.class_evaluation import run_class_evaluation
+from evaluation.optimization.sensor_evaluation import run_sensor_evaluation
 
 """
 Example Calculations
@@ -28,11 +29,10 @@ to /out/subject-plots"""
 #                      k_list=[1, 3, 5])
 
 """6. Evaluation of rank-method; save precision@k values as MD-table"""
-# run_rank_method_evaluation()
+run_rank_method_evaluation()
 
 """7. Evaluation of classes, save precision@k values as MD-table"""
-# run_class_evaluation(rank_method="score")
+run_class_evaluation(rank_method="score")
 
-
-from evaluation.optimization.sensor_evaluation import calculate_sensor_precisions
-calculate_sensor_precisions()
+"""8. Evaluation of sensor-combinations, save precision@k values as MD-table"""
+run_sensor_evaluation(rank_method="score", average_method="weighted-mean")
