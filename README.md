@@ -27,3 +27,6 @@ Please download the WESAD dataset from https://uni-siegen.sciebo.de/s/HGdUkoNlW1
 
 8. Evaluation of sensor-combinations, save precision@k values as MD-table
 * run_sensor_evaluation(rank_method="score", average_method="weighted-mean")
+
+9. Evaluation of windows, save precision@k values as MD-table
+* run_window_evaluation(rank_method="score", average_method="weighted-mean", sensor_combination=[["acc", "temp"]])

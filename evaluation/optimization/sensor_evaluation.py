@@ -15,7 +15,7 @@ OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
 EVALUATIONS_PATH = os.path.join(OUT_PATH, "evaluations")  # add /evaluations to path
 
 
-def list_to_string(input_list):
+def list_to_string(input_list: List[str]):
     """
     Get string for possible sensor-name combinations
     :param input_list: List to be transformed

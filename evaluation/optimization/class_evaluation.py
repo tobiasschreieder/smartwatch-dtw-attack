@@ -144,6 +144,3 @@ def run_class_evaluation(rank_method: str = "score"):
             outfile.write("%s\n" % item)
 
     print("SW-DTW evaluation for classes saved at: " + str(EVALUATIONS_PATH))
-
-
-

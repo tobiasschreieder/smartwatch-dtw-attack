@@ -251,7 +251,7 @@ def create_md_precision_sensors(rank_method: str, average_method: str, results: 
         Get best sensor-combinations for specified k
         :param res: Dictionary with sensor precision results
         :param dec_k: Specify k to choose best rank-method
-        :return: best sensor-combination
+        :return: Best sensor-combination
         """
         best_sensor = str
         best_precision = 0.0
@@ -281,6 +281,58 @@ def create_md_precision_sensors(rank_method: str, average_method: str, results: 
         text += "| " + str(k) + " | "
         for sensor in results[k]:
             text += str(results[k][sensor]) + " | "
+        text += "\n"
+
+    return text
+
+
+def create_md_precision_windows(rank_method: str, average_method: str, sensor_combination: List[List[str]],
+                                results: Dict[int, Dict[float, float]], decision_k: int = 1) -> str:
+    """
+    Create text for MD-file with results of window (test-proportion) evaluation
+    :param rank_method: Specify rank-method ("score" or "rank")
+    :param average_method: Specify averaging-method ("mean" or "weighted-mean)
+    :param sensor_combination: Specify sensor-combination e.g. [["acc", "temp"]] (Choose best one)
+    :param results: Results with precision values per class
+    :param decision_k: Specify k to choose best rank-method
+    :return: String with MD text
+    """
+    def get_best_window(res: Dict[int, Dict[float, float]], dec_k: int = 1) -> float:
+        """
+        Get best window for specified k
+        :param res: Dictionary with sensor precision results
+        :param dec_k: Specify k to choose best rank-method
+        :return: Best window
+        """
+        best_window = float
+        best_precision = 0.0
+        for wind, pre in res[dec_k].items():
+            if pre > best_precision:
+                best_precision = pre
+                best_window = wind
+
+        return best_window
+
+    text = "# Evaluation of Windows: \n"
+    text += "* Calculated with rank-method: '" + str(rank_method) + "' \n"
+    text += "* Calculated with averaging-method: '" + str(average_method) + "' \n"
+    text += "* Calculated with sensor-combination: '" + str(sensor_combination) + "' \n"
+    text += "* Preferred window-size for k = " + str(decision_k) + ": '" + \
+            str(get_best_window(res=results, dec_k=decision_k)) + "' \n"
+
+    text += "## Precision@k table: \n"
+    text += "| k |"
+    separator = "|---|"
+    for window in results[decision_k]:
+        text += str(window) + " | "
+        separator += "---|"
+    text += "\n"
+    text += separator + "\n"
+
+    for k in results:
+        text += "| " + str(k) + " | "
+        for window in results[k]:
+            text += str(results[k][window]) + " | "
         text += "\n"
 
     return text
