@@ -1,3 +1,5 @@
+import random
+
 from alignments.dtw_calculations import get_classes, get_proportions
 from evaluation.calculate_precisions import calculate_precision_combinations
 from evaluation.calculate_ranks import get_realistic_ranks_combinations
@@ -8,6 +10,7 @@ from preprocessing.data_preparation import get_subject_list
 from typing import List, Dict
 import statistics
 import os
+import random
 
 
 MAIN_PATH = os.path.abspath(os.getcwd())
@@ -104,12 +107,33 @@ def calculate_rank_method_precisions(subject_ids: List = None) -> Dict[int, Dict
     return results
 
 
+def get_best_rank_method_configuration(res: Dict[int, Dict[str, float]]) -> str:
+    """
+    Calculate best ranking-method configuration "score" or "rank" from given results
+    :param res: Dictionary with results
+    :return: String with best ranking-method
+    """
+    best_rank_method = str()
+    for dec_k in res:
+        if res[dec_k]["score"] > res[dec_k]["rank"]:
+            best_rank_method = "score"
+            break
+        elif res[dec_k]["score"] < res[dec_k]["rank"]:
+            best_rank_method = "rank"
+            break
+        else:
+            best_rank_method = random.choice(["rank", "score"])
+
+    return best_rank_method
+
+
 def run_rank_method_evaluation():
     """
     Run and save evaluation for rank-methods
     """
     results = calculate_rank_method_precisions()
-    text = [create_md_precision_rank_method(results=results)]
+    best_rank_method = get_best_rank_method_configuration(res=results)
+    text = [create_md_precision_rank_method(results=results, best_rank_method=best_rank_method)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)

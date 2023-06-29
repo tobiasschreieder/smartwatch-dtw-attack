@@ -6,6 +6,7 @@ from evaluation.optimization.rank_method_evaluation import run_rank_method_evalu
 from evaluation.optimization.class_evaluation import run_class_evaluation
 from evaluation.optimization.sensor_evaluation import run_sensor_evaluation
 from evaluation.optimization.window_evaluation import run_window_evaluation
+from evaluation.evaluation import run_optimization_evaluation
 
 """
 Example Calculations
@@ -40,3 +41,7 @@ to /out/subject-plots"""
 
 """9. Evaluation of windows, save precision@k values as MD-table"""
 # run_window_evaluation(rank_method="score", average_method="weighted-mean", sensor_combination=[["acc", "temp"]])
+
+"""10. Complete optimization evaluation, save precision@k values as MD-table"""
+run_optimization_evaluation()
+

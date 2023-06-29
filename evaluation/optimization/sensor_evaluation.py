@@ -5,9 +5,10 @@ from evaluation.optimization.class_evaluation import get_class_distribution
 from evaluation.create_md_tables import create_md_precision_sensors
 from preprocessing.data_preparation import get_sensor_combinations, get_subject_list
 
-from typing import List
+from typing import List, Dict, Union
 import os
 import statistics
+import random
 
 
 MAIN_PATH = os.path.abspath(os.getcwd())
@@ -15,9 +16,9 @@ OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
 EVALUATIONS_PATH = os.path.join(OUT_PATH, "evaluations")  # add /evaluations to path
 
 
-def list_to_string(input_list: List[str]):
+def list_to_string(input_list: List[str]) -> str:
     """
-    Get string for possible sensor-name combinations
+    Get string for possible sensor-name combinations e.g. ["acc", "temp"] -> "acc+temp"
     :param input_list: List to be transformed
     :return: String with text
     """
@@ -27,6 +28,16 @@ def list_to_string(input_list: List[str]):
         text += "+"
     text = text[:-1]
     return text
+
+
+def string_to_list(input_string: str) -> List[List[str]]:
+    """
+    Get list from string with sensor-name combinations e.g. "acc+temp" -> [["acc", "temp"]]
+    :param input_string: String to be transformed
+    :return: List with sensor-combinations
+    """
+    sensor_list = input_string.split(sep="+")
+    return [sensor_list]
 
 
 def calculate_sensor_precisions(rank_method: str = "score", average_method: str = "weighted-mean",
@@ -95,6 +106,47 @@ def calculate_sensor_precisions(rank_method: str = "score", average_method: str 
     return results
 
 
+def get_best_sensor_configuration(res: Dict[int, Dict[str, float]], printable_version: bool = False) \
+        -> Union[str, List[List[str]]]:
+    """
+    Calculate best sensor-combinations from given results
+    :param res: Dictionary with sensor precision results
+    :param printable_version: Set True if e.g. "acc+temp" instead of [["acc", "temp"]] should be returned
+    :return: String or List with best sensor-combination
+    """
+    def get_best_sensor(sensors: Dict[str, float]) -> List[str]:
+        """
+        Get sensor-combinations with maximum precision score
+        :param sensors: Dictionary with all sensor-combinations and precision scores
+        :return: List with best sensor-combinations
+        """
+        max_value = max(sensors.values())
+        max_sensors = [k for k, v in sensors.items() if v == max_value]
+        return max_sensors
+
+    best_sensor = str()
+    best_sensors = list()
+    adjusted_res = res.copy()
+    for k in res:
+        if len(best_sensors) == 0:
+            best_sensors = get_best_sensor(sensors=res[k])
+        else:
+            adjusted_res[k] = {key: adjusted_res[k][key] for key in best_sensors}
+            best_sensors = get_best_sensor(sensors=adjusted_res[k])
+
+        if len(best_sensors) == 1:
+            best_sensor = best_sensors[0]
+            break
+
+    if len(best_sensors) > 1:
+        best_sensor = random.choice(best_sensors)
+
+    if not printable_version:
+        best_sensor = string_to_list(input_string=best_sensor)
+
+    return best_sensor
+
+
 def run_sensor_evaluation(rank_method: str = "score", average_method: str = "weighted-mean"):
     """
     Run and save evaluation for sensor-combinations
@@ -102,8 +154,10 @@ def run_sensor_evaluation(rank_method: str = "score", average_method: str = "wei
     :param average_method: Specify averaging-method "mean" or "weighted-mean" (use best performing method)
     """
     results = calculate_sensor_precisions(rank_method=rank_method, average_method=average_method)
+    best_sensors = get_best_sensor_configuration(res=results, printable_version=True)
 
-    text = [create_md_precision_sensors(rank_method=rank_method, average_method=average_method, results=results)]
+    text = [create_md_precision_sensors(rank_method=rank_method, average_method=average_method, results=results,
+                                        best_sensors=best_sensors)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)

@@ -161,24 +161,15 @@ def create_md_precision_combinations(rank_method: str, method: str, proportion_t
     return text
 
 
-def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], decision_k: int = 1) -> str:
+def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], best_rank_method: str) -> str:
     """
     Create text for MD-file with results of rank-method evaluation
     :param results: Results with precision values
-    :param decision_k: Specify k to choose best rank-method
+    :param best_rank_method: Specify best rank-method
     :return: String with MD text
     """
     text = "# Evaluation of Rank-Methods: \n"
-
-    try:
-        if results[decision_k]["score"] > results[decision_k]["rank"]:
-            text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'score' \n"
-        elif results[decision_k]["score"] < results[decision_k]["rank"]:
-            text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'rank' \n"
-        else:
-            text += "* Preferred rank-method for specified k = " + str(decision_k) + ": 'rank' or 'score' \n"
-    except KeyError:
-        print("Please specify a valid decision-k!")
+    text += "* Preferred rank-method: '" + str(best_rank_method) + "' (decision based on smallest k) \n"
 
     text += "## Precision@k table: \n"
     text += "| k | rank | score | mean |" + "\n"
@@ -193,28 +184,19 @@ def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], decisi
 
 def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, float]],
                                 average_results: Dict[int, float], weighted_average_results: Dict[int, float],
-                                decision_k: int = 1) -> str:
+                                best_class_method: str) -> str:
     """
     Create text for MD-file with results of class evaluation
     :param rank_method: Specify rank-method ("score" or "rank")
     :param results: Results with precision values per class
     :param average_results: Results with average precision values
     :param weighted_average_results: Results with weighted average precision values
-    :param decision_k: Specify k to choose best rank-method
+    :param best_class_method: Specify best class-method
     :return: String with MD text
     """
     text = "# Evaluation of Classes: \n"
     text += "* Calculated with rank-method: '" + str(rank_method) + "' \n"
-
-    try:
-        if average_results[decision_k] > weighted_average_results[decision_k]:
-            text += "* Preferred class averaging method for k = " + str(decision_k) + ": 'mean' \n"
-        elif average_results[decision_k] < weighted_average_results[decision_k]:
-            text += "* Preferred class averaging method for k = " + str(decision_k) + ": 'weighted mean' \n"
-        else:
-            text += "* Preferred class averaging method for k = " + str(decision_k) + ": 'mean' or 'weighted mean' \n"
-    except KeyError:
-        print("Please specify a valid decision-k!")
+    text += "* Preferred class averaging method: '" + str(best_class_method) + "' (decision based on smallest k) \n"
 
     text += "## Evaluation per Class: \n"
     text += "### Precision@k table: \n"
@@ -237,41 +219,24 @@ def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, f
 
 
 def create_md_precision_sensors(rank_method: str, average_method: str, results: Dict[int, Dict[str, float]],
-                                decision_k: int = 1) -> str:
+                                best_sensors: str) -> str:
     """
     Create text for MD-file with results of sensor-combination evaluation
     :param rank_method: Specify rank-method ("score" or "rank")
     :param average_method: Specify averaging-method ("mean" or "weighted-mean)
     :param results: Results with precision values per class
-    :param decision_k: Specify k to choose best rank-method
+    :param best_sensors: Specify best sensor-combination
     :return: String with MD text
     """
-    def get_best_sensor(res: Dict[int, Dict[str, float]], dec_k: int = 1) -> str:
-        """
-        Get best sensor-combinations for specified k
-        :param res: Dictionary with sensor precision results
-        :param dec_k: Specify k to choose best rank-method
-        :return: Best sensor-combination
-        """
-        best_sensor = str
-        best_precision = 0.0
-        for sens, pre in res[dec_k].items():
-            if pre > best_precision:
-                best_precision = pre
-                best_sensor = sens
-
-        return best_sensor
-
     text = "# Evaluation of Sensor-Combinations: \n"
     text += "* Calculated with rank_method: '" + str(rank_method) + "' \n"
     text += "* Calculated with averaging-method: '" + str(average_method) + "' \n"
-    text += "* Preferred sensor-combination for k = " + str(decision_k) + ": '" + \
-            str(get_best_sensor(res=results, dec_k=decision_k)) + "' \n"
+    text += "* Preferred sensor-combination: '" + str(best_sensors) + "' (decision based on smallest k) \n"
 
     text += "## Precision@k table: \n"
     text += "| k |"
     separator = "|---|"
-    for sensor in results[decision_k]:
+    for sensor in results[list(results.keys())[0]]:
         text += str(sensor) + " | "
         separator += "---|"
     text += "\n"
@@ -287,43 +252,26 @@ def create_md_precision_sensors(rank_method: str, average_method: str, results: 
 
 
 def create_md_precision_windows(rank_method: str, average_method: str, sensor_combination: List[List[str]],
-                                results: Dict[int, Dict[float, float]], decision_k: int = 1) -> str:
+                                results: Dict[int, Dict[float, float]], best_window: float) -> str:
     """
     Create text for MD-file with results of window (test-proportion) evaluation
     :param rank_method: Specify rank-method ("score" or "rank")
     :param average_method: Specify averaging-method ("mean" or "weighted-mean)
     :param sensor_combination: Specify sensor-combination e.g. [["acc", "temp"]] (Choose best one)
     :param results: Results with precision values per class
-    :param decision_k: Specify k to choose best rank-method
+    :param best_window: Specify best window
     :return: String with MD text
     """
-    def get_best_window(res: Dict[int, Dict[float, float]], dec_k: int = 1) -> float:
-        """
-        Get best window for specified k
-        :param res: Dictionary with sensor precision results
-        :param dec_k: Specify k to choose best rank-method
-        :return: Best window
-        """
-        best_window = float
-        best_precision = 0.0
-        for wind, pre in res[dec_k].items():
-            if pre > best_precision:
-                best_precision = pre
-                best_window = wind
-
-        return best_window
-
     text = "# Evaluation of Windows: \n"
     text += "* Calculated with rank-method: '" + str(rank_method) + "' \n"
     text += "* Calculated with averaging-method: '" + str(average_method) + "' \n"
     text += "* Calculated with sensor-combination: '" + str(sensor_combination) + "' \n"
-    text += "* Preferred window-size for k = " + str(decision_k) + ": '" + \
-            str(get_best_window(res=results, dec_k=decision_k)) + "' \n"
+    text += "* Preferred window-size: '" + str(best_window) + "' (decision based on smallest k) \n"
 
     text += "## Precision@k table: \n"
     text += "| k |"
     separator = "|---|"
-    for window in results[decision_k]:
+    for window in results[list(results.keys())[0]]:
         text += str(window) + " | "
         separator += "---|"
     text += "\n"

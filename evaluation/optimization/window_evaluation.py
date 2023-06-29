@@ -7,9 +7,9 @@ from preprocessing.data_preparation import get_subject_list
 
 from typing import Dict, List
 import matplotlib.pyplot as plt
-import pandas as pd
 import statistics
 import os
+import random
 
 MAIN_PATH = os.path.abspath(os.getcwd())
 OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
@@ -106,6 +106,59 @@ def plot_window_precisions(results: Dict[int, Dict[float, float]], k_list: List[
     plt.close()
 
 
+def get_best_window_configuration_2(res: Dict[int, Dict[float, float]]) -> float:
+    """
+    Calculate best window configuration (test-proportion) from given results
+    :param res: Dictionary with results
+    :return: String with best window-size
+    """
+    k = list(res.keys())[0]
+    best_window = float
+    best_precision = 0.0
+    for wind, pre in res[k].items():
+        if pre > best_precision:
+            best_precision = pre
+            best_window = wind
+
+    return best_window
+
+
+def get_best_window_configuration(res: Dict[int, Dict[str, float]]) -> float:
+    """
+    Calculate best window configuration (test-proportion) from given results
+    :param res: Dictionary with results
+    :return: String with best window-size
+    """
+    def get_best_window(windows: Dict[str, float]) -> List[str]:
+        """
+        Get window with maximum precision score
+        :param windows: Dictionary with all windows and precision scores
+        :return: List with best windows
+        """
+        max_value = max(windows.values())
+        max_windows = [k for k, v in windows.items() if v == max_value]
+        return max_windows
+
+    best_window = str()
+    best_windows = list()
+    adjusted_res = res.copy()
+    for k in res:
+        if len(best_windows) == 0:
+            best_windows = get_best_window(windows=res[k])
+        else:
+            adjusted_res[k] = {key: adjusted_res[k][key] for key in best_windows}
+            best_windows = get_best_window(windows=adjusted_res[k])
+
+        if len(best_windows) == 1:
+            best_window = best_windows[0]
+            break
+
+    if len(best_windows) > 1:
+        best_window = random.choice(best_windows)
+
+    return best_window
+
+
 def run_window_evaluation(rank_method: str = "score", average_method: str = "weighted-mean",
                           sensor_combination=None):
     """
@@ -119,9 +172,10 @@ def run_window_evaluation(rank_method: str = "score", average_method: str = "wei
 
     results = calculate_window_precisions(rank_method=rank_method, average_method=average_method,
                                           sensor_combination=sensor_combination)
+    best_window = get_best_window_configuration(res=results)
 
     text = [create_md_precision_windows(rank_method=rank_method, average_method=average_method, results=results,
-                                        sensor_combination=sensor_combination)]
+                                        sensor_combination=sensor_combination, best_window=best_window)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)

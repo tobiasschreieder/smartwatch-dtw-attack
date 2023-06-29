@@ -9,6 +9,7 @@ from typing import Dict, List, Tuple
 import pandas as pd
 import statistics
 import os
+import random
 
 
 MAIN_PATH = os.path.abspath(os.getcwd())
@@ -124,6 +125,27 @@ def calculate_average_class_precisions(rank_method: str = "score", subject_ids: 
     return average_results, weighted_average_results
 
 
+def get_best_class_configuration(average_res: Dict[int, float], weighted_average_res: Dict[int, float]) -> str:
+    """
+    Calculate best class configuration "mean" or "weighted-mean" from given results
+    :param average_res: Dictionary with averaged results
+    :param weighted_average_res: Dictionary with weighted averaged results
+    :return: String with best class-configuration
+    """
+    best_class_method = str()
+    for dec_k in average_res:
+        if average_res[dec_k] > weighted_average_res[dec_k]:
+            best_class_method = "mean"
+            break
+        elif average_res[dec_k] < weighted_average_res[dec_k]:
+            best_class_method = "weighted-mean"
+            break
+        else:
+            best_class_method = random.choice(["mean", "weighted-mean"])
+
+    return best_class_method
+
+
 def run_class_evaluation(rank_method: str = "score"):
     """
     Run and save evaluation for classes
@@ -131,9 +153,12 @@ def run_class_evaluation(rank_method: str = "score"):
     """
     results = calculate_class_precisions(rank_method=rank_method)
     average_results, weighted_average_results = calculate_average_class_precisions(rank_method=rank_method)
+    best_class_method = get_best_class_configuration(average_res=average_results,
+                                                     weighted_average_res=weighted_average_results)
 
     text = [create_md_precision_classes(rank_method=rank_method, results=results, average_results=average_results,
-                                        weighted_average_results=weighted_average_results)]
+                                        weighted_average_results=weighted_average_results,
+                                        best_class_method=best_class_method)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)

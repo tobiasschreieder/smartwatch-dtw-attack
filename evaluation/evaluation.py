@@ -1,11 +1,20 @@
 from evaluation.calculate_precisions import calculate_max_precision
 from evaluation.calculate_ranks import run_calculate_ranks, get_realistic_ranks
 from evaluation.create_md_tables import create_md_distances, create_md_ranks, create_md_precision_combinations
+from evaluation.optimization.class_evaluation import calculate_average_class_precisions, get_best_class_configuration, \
+    run_class_evaluation
+from evaluation.optimization.rank_method_evaluation import calculate_rank_method_precisions, \
+    get_best_rank_method_configuration, run_rank_method_evaluation
+from evaluation.optimization.sensor_evaluation import calculate_sensor_precisions, get_best_sensor_configuration, \
+    run_sensor_evaluation
+from evaluation.optimization.window_evaluation import calculate_window_precisions, get_best_window_configuration, \
+    run_window_evaluation
 from preprocessing.data_preparation import get_subject_list
 from preprocessing.process_results import load_results
 
-from typing import List
+from typing import List, Union
 import os
+import json
 import matplotlib.pyplot as plt
 
 
@@ -13,6 +22,7 @@ MAIN_PATH = os.path.abspath(os.getcwd())
 OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
 SUBJECT_PLOT_PATH = os.path.join(OUT_PATH, "subject-plots")  # add /subject-plots to path
 PRECISION_PATH = os.path.join(OUT_PATH, "precision")  # add /precision to path
+EVALUATIONS_PATH = os.path.join(OUT_PATH, "evaluations")  # add /evaluations to path
 
 
 def run_calculate_max_precision(k_list: List[int], methods: List[str], proportions_test: List[float],
@@ -103,7 +113,7 @@ def subject_evaluation(methods: List[str], proportions_test: List[float], plot_r
                   str(proportion_test) + " saved at: " + str(path))
 
 
-def precision_evaluation(methods: List[str], proportions_test=List[float], k_list: List[int] = None):
+def precision_evaluation(methods: List[str], proportions_test: List[float], k_list: List[int] = None):
     """
     Evaluate DTW alignments with precision@k
     :param methods: List with methods ("baseline", "amusement", "stress")
@@ -133,3 +143,53 @@ def precision_evaluation(methods: List[str], proportions_test=List[float], k_lis
 
             print("SW-DTW precision-plot for method = " + str(method) + " and test-proportion = " + str(proportion_test)
                   + " saved at: " + str(path))
+
+
+def calculate_best_configurations() -> dict[str, Union[str, float, List[List[str]]]]:
+    """
+    Calculate the best configurations for rank-method, classes, sensors and windows
+    :return: Dictionary with best configurations
+    """
+    # Best rank-method
+    results = calculate_rank_method_precisions()
+    best_rank_method = get_best_rank_method_configuration(res=results)
+
+    # Best class
+    average_results, weighted_average_results = calculate_average_class_precisions(rank_method=best_rank_method)
+    best_class_method = get_best_class_configuration(average_res=average_results,
+                                                     weighted_average_res=weighted_average_results)
+
+    # Best sensors
+    results = calculate_sensor_precisions(rank_method=best_rank_method, average_method=best_class_method)
+    best_sensors = get_best_sensor_configuration(res=results)
+
+    # Best window
+    results = calculate_window_precisions(rank_method=best_rank_method, average_method=best_class_method,
+                                          sensor_combination=best_sensors)
+    best_window = get_best_window_configuration(res=results)
+
+    best_configurations = {"rank_method": best_rank_method, "class": best_class_method, "sensor": best_sensors,
+                           "window": best_window}
+
+    return best_configurations
+
+
+def run_optimization_evaluation():
+    """
+    Run complete optimizations evaluation, Evaluation of: rank-methods, classes, sensors, windows
+    """
+    # Get best configurations
+    best_configurations = calculate_best_configurations()
+
+    # Evaluation of rank-method
+    run_rank_method_evaluation()
+
+    # Evaluation of classes
+    run_class_evaluation(rank_method=best_configurations["rank_method"])
+
+    # Evaluation of sensor-combinations
+    run_sensor_evaluation(rank_method=best_configurations["rank_method"], average_method=best_configurations["class"])
+
+    # Evaluation of windows
+    run_window_evaluation(rank_method=best_configurations["rank_method"], average_method=best_configurations["class"],
+                          sensor_combination=best_configurations["sensor"])
