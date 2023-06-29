@@ -106,30 +106,13 @@ def plot_window_precisions(results: Dict[int, Dict[float, float]], k_list: List[
     plt.close()
 
 
-def get_best_window_configuration_2(res: Dict[int, Dict[float, float]]) -> float:
+def get_best_window_configuration(res: Dict[int, Dict[float, float]]) -> float:
     """
     Calculate best window configuration (test-proportion) from given results
     :param res: Dictionary with results
     :return: String with best window-size
     """
-    k = list(res.keys())[0]
-    best_window = float
-    best_precision = 0.0
-    for wind, pre in res[k].items():
-        if pre > best_precision:
-            best_precision = pre
-            best_window = wind
-
-    return best_window
-
-
-def get_best_window_configuration(res: Dict[int, Dict[str, float]]) -> float:
-    """
-    Calculate best window configuration (test-proportion) from given results
-    :param res: Dictionary with results
-    :return: String with best window-size
-    """
-    def get_best_window(windows: Dict[str, float]) -> List[str]:
+    def get_best_window(windows: Dict[float, float]) -> List[float]:
         """
         Get window with maximum precision score
         :param windows: Dictionary with all windows and precision scores

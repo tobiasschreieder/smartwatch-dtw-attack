@@ -43,5 +43,5 @@ to /out/subject-plots"""
 # run_window_evaluation(rank_method="score", average_method="weighted-mean", sensor_combination=[["acc", "temp"]])
 
 """10. Complete optimization evaluation, save precision@k values as MD-table"""
-run_optimization_evaluation()
+# run_optimization_evaluation()
 
