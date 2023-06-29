@@ -251,13 +251,13 @@ def create_md_precision_sensors(rank_method: str, average_method: str, results: 
     return text
 
 
-def create_md_precision_windows(rank_method: str, average_method: str, sensor_combination: List[List[str]],
+def create_md_precision_windows(rank_method: str, average_method: str, sensor_combination: str,
                                 results: Dict[int, Dict[float, float]], best_window: float) -> str:
     """
     Create text for MD-file with results of window (test-proportion) evaluation
     :param rank_method: Specify rank-method ("score" or "rank")
     :param average_method: Specify averaging-method ("mean" or "weighted-mean)
-    :param sensor_combination: Specify sensor-combination e.g. [["acc", "temp"]] (Choose best one)
+    :param sensor_combination: Specify sensor-combination e.g. "acc+temp" (Choose best one)
     :param results: Results with precision values per class
     :param best_window: Specify best window
     :return: String with MD text

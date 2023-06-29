@@ -54,6 +54,7 @@ def plot_realistic_ranks(path: os.path, method: str, proportion_test:float):
     ax1.set_title('Rank boxplot')
     ax1.boxplot(real_ranks, notch=False)
     plt.savefig(fname=path)
+    plt.close()
 
 
 def subject_evaluation(methods: List[str], proportions_test: List[float], plot_ranks: bool = True, subject_list=None):

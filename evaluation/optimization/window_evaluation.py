@@ -3,6 +3,7 @@ from evaluation.metrics.calculate_precisions import calculate_precision_combinat
 from evaluation.metrics.calculate_ranks import get_realistic_ranks_combinations
 from evaluation.create_md_tables import create_md_precision_windows
 from evaluation.optimization.class_evaluation import get_class_distribution
+from evaluation.optimization.sensor_evaluation import list_to_string
 from preprocessing.data_preparation import get_subject_list
 
 from typing import Dict, List
@@ -158,7 +159,8 @@ def run_window_evaluation(rank_method: str = "score", average_method: str = "wei
     best_window = get_best_window_configuration(res=results)
 
     text = [create_md_precision_windows(rank_method=rank_method, average_method=average_method, results=results,
-                                        sensor_combination=sensor_combination, best_window=best_window)]
+                                        sensor_combination=list_to_string(input_list=sensor_combination[0]),
+                                        best_window=best_window)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)
