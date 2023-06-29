@@ -1,12 +1,12 @@
-from evaluation.exploratory_data_analysis import plot_subject_data
-from preprocessing.data_preparation import preprocess_data
 from alignments.dtw_calculations import run_calculations
-from evaluation.evaluation import subject_evaluation, precision_evaluation
-from evaluation.optimization.rank_method_evaluation import run_rank_method_evaluation
+from evaluation.analysis.exploratory_data_analysis import plot_subject_data
+from evaluation.evaluation import subject_evaluation, precision_evaluation, run_optimization_evaluation
 from evaluation.optimization.class_evaluation import run_class_evaluation
+from evaluation.optimization.rank_method_evaluation import run_rank_method_evaluation
 from evaluation.optimization.sensor_evaluation import run_sensor_evaluation
 from evaluation.optimization.window_evaluation import run_window_evaluation
-from evaluation.evaluation import run_optimization_evaluation
+from preprocessing.data_preparation import preprocess_data
+
 
 """
 Example Calculations

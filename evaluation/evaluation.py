@@ -1,5 +1,5 @@
-from evaluation.calculate_precisions import calculate_max_precision
-from evaluation.calculate_ranks import run_calculate_ranks, get_realistic_ranks
+from evaluation.metrics.calculate_precisions import calculate_max_precision
+from evaluation.metrics.calculate_ranks import run_calculate_ranks, get_realistic_ranks
 from evaluation.create_md_tables import create_md_distances, create_md_ranks, create_md_precision_combinations
 from evaluation.optimization.class_evaluation import calculate_average_class_precisions, get_best_class_configuration, \
     run_class_evaluation
@@ -14,7 +14,6 @@ from preprocessing.process_results import load_results
 
 from typing import List, Union
 import os
-import json
 import matplotlib.pyplot as plt
 
 

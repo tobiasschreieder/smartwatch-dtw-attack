@@ -1,5 +1,5 @@
 from preprocessing.data_preparation import get_subject_list
-from evaluation.calculate_ranks import run_calculate_ranks, realistic_rank, get_realistic_ranks_combinations
+from evaluation.metrics.calculate_ranks import run_calculate_ranks, realistic_rank, get_realistic_ranks_combinations
 from preprocessing.process_results import load_results
 
 from typing import List

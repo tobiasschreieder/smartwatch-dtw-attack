@@ -1,8 +1,6 @@
-import random
-
 from alignments.dtw_calculations import get_classes, get_proportions
-from evaluation.calculate_precisions import calculate_precision_combinations
-from evaluation.calculate_ranks import get_realistic_ranks_combinations
+from evaluation.metrics.calculate_precisions import calculate_precision_combinations
+from evaluation.metrics.calculate_ranks import get_realistic_ranks_combinations
 from evaluation.create_md_tables import create_md_precision_rank_method
 from preprocessing.data_preparation import get_sensor_combinations
 from preprocessing.data_preparation import get_subject_list
