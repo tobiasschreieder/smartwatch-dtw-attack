@@ -6,6 +6,7 @@ from evaluation.optimization.rank_method_evaluation import run_rank_method_evalu
 from evaluation.optimization.sensor_evaluation import run_sensor_evaluation
 from evaluation.optimization.window_evaluation import run_window_evaluation
 from preprocessing.data_preparation import preprocess_data
+from evaluation.optimization.overall_evaluation import run_overall_evaluation
 
 
 """
@@ -45,3 +46,12 @@ to /out/subject-plots"""
 """10. Complete optimization evaluation, save precision@k values as MD-table"""
 # run_optimization_evaluation()
 
+"""11. Overall evaluation with (DTW-results, maximum results, random guess results), save precision@k values as 
+MD-table"""
+run_overall_evaluation()
+
+
+"""
+from evaluation.evaluation import run_calculate_max_precision
+run_calculate_max_precision(k_list=[5])
+"""

@@ -6,6 +6,7 @@ import statistics
 MAIN_PATH = os.path.abspath(os.getcwd())
 OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
 ALIGNMENT_PATH = os.path.join(OUT_PATH, "alignments")  # add /alignments to path
+PRECISION_PATH = os.path.join(OUT_PATH, "precision")  # add /precision to path
 
 
 def load_results(subject_id: int, method: str, proportion_test: float, normalized_data: bool = True):
@@ -39,5 +40,30 @@ def load_results(subject_id: int, method: str, proportion_test: float, normalize
 
     except FileNotFoundError:
         print("FileNotFoundError: no results with this configuration available")
+
+    return results
+
+
+def load_max_precision_results(method: str, proportion_test: float, k: int):
+    """
+    Load max-precision results
+    :param method: Specify method
+    :param proportion_test: Specify test-proportion
+    :param k: Specify k
+    :return: Dictionary with results
+    """
+    results = dict()
+    try:
+        path = os.path.join(PRECISION_PATH, str(method))  # add /method to path
+        path = os.path.join(path, "test=" + str(proportion_test))  # add /test=0.XX to path
+        path = os.path.join(path, "max-precision")  # add /max-precision to path
+
+        path = path + "/SW-DTW_max-precision_" + str(method) + "_" + str(proportion_test) + "_k=" + str(k) + ".json"
+
+        f = open(path, "r")
+        results = json.loads(f.read())
+
+    except FileNotFoundError:
+        print("FileNotFoundError: no max-precision with this configuration available")
 
     return results

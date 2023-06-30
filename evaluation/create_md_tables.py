@@ -284,3 +284,30 @@ def create_md_precision_windows(rank_method: str, average_method: str, sensor_co
         text += "\n"
 
     return text
+
+
+def create_md_precision_overall(results: Dict[int, Dict[str, float]], rank_method: str, average_method: str,
+                                sensor_combination: str, window: float) -> str:
+    """
+    Create text for MD-file with results of overall evaluation
+    :param results: Results with precision values (DTW-results, maximum results, random guess results)
+    :param rank_method: Specify rank-method ("score" or "rank")
+    :param average_method: Specify averaging-method ("mean" or "weighted-mean)
+    :param sensor_combination: Specify sensor-combination e.g. "acc+temp" (Choose best one)
+    :param window: Specify best window-size
+    :return: String with MD text
+    """
+    text = "# Evaluation overall: \n"
+    text += "* Calculated with rank-method: '" + str(rank_method) + "' \n"
+    text += "* Calculated with averaging-method: '" + str(average_method) + "' \n"
+    text += "* Calculated with sensor-combination: '" + str(sensor_combination) + "' \n"
+    text += "* Calculated with window-size: '" + str(window) + "' \n"
+
+    text += "## Precision@k table: \n"
+    text += "| k | DTW-results | theoretical maximum | random guess |" + "\n"
+    text += "|---|---|---|---|" + "\n"
+    for k in results:
+        text += "| " + str(k) + " | " + str(results[k]["results"]) + " | " + str(results[k]["max"]) + " | " + \
+                str(results[k]["random"]) + " |" + "\n"
+
+    return text

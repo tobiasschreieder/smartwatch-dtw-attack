@@ -33,3 +33,6 @@ Please download the WESAD dataset from https://uni-siegen.sciebo.de/s/HGdUkoNlW1
 
 10. Complete optimization evaluation, save precision@k values as MD-table 
 * run_optimization_evaluation()
+
+11. Overall evaluation with (DTW-results, maximum results, random guess results), save precision@k values as MD-table
+* run_overall_evaluation()
