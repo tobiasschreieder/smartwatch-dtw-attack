@@ -304,7 +304,7 @@ def create_md_precision_overall(results: Dict[int, Dict[str, float]], rank_metho
     text += "* Calculated with window-size: '" + str(window) + "' \n"
 
     text += "## Precision@k table: \n"
-    text += "| k | DTW-results | theoretical maximum | random guess |" + "\n"
+    text += "| k | DTW-results | sensor weighted | random guess |" + "\n"
     text += "|---|---|---|---|" + "\n"
     for k in results:
         text += "| " + str(k) + " | " + str(results[k]["results"]) + " | " + str(results[k]["max"]) + " | " + \

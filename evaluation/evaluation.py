@@ -1,4 +1,4 @@
-from alignments.dtw_calculations import get_classes, get_proportions
+from alignments.dtw_attack import get_classes, get_proportions
 from evaluation.metrics.calculate_precisions import calculate_max_precision
 from evaluation.metrics.calculate_ranks import run_calculate_ranks, get_realistic_ranks
 from evaluation.create_md_tables import create_md_distances, create_md_ranks, create_md_precision_combinations

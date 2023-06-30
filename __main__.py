@@ -8,6 +8,11 @@ from evaluation.optimization.window_evaluation import run_window_evaluation
 from preprocessing.data_preparation import preprocess_data
 from evaluation.optimization.overall_evaluation import run_overall_evaluation
 
+
+import getopt
+import sys
+
+
 """
 Example Calculations
 ------------------------------------------------------------------------------------------------------------------------
@@ -49,5 +54,24 @@ to /out/subject-plots"""
 MD-table"""
 # run_overall_evaluation()
 
-from alignments.dtw_alignment import calculate_full_subject_alignment
-calculate_full_subject_alignment(subject_id=2)
+
+"""
+Main for input arguments
+------------------------------------------------------------------------------------------------------------------------
+"""
+
+
+def main(argv):
+    subject_ids = list()
+    try:
+        opts, args = getopt.getopt(argv, 's:', ['subject_ids='])
+    except getopt.GetoptError:
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt in ("-s", "--subject_ids"):
+            subject_ids = int(arg)
+    run_calculations(proportions=[0.001, 0.005], subject_ids=[subject_ids])
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

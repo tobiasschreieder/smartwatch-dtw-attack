@@ -70,7 +70,7 @@ def create_subject_data(method: str, proportion_test: float, subject_id: int) \
 
             # Method "stress"
             else:
-                label_data = label_data[label_data.label == 1]  # Data for subject with label == 1 -> amusement
+                label_data = label_data[label_data.label == 1]  # Data for subject with label == 1 -> stress
 
             test_data_amount = round(len(data_dict[subject]) * proportion_test)
             method_proportion_test = test_data_amount / len(label_data)
@@ -176,7 +176,7 @@ def calculate_alignment(subject_id: int, method: str, proportion_test: float) \
     return results_normalized, results_standard
 
 
-def run_calculations(proportions: List[float], methods: List[str], subject_ids: List[int] = None):
+def run_calculations(proportions: List[float], methods: List[str] = None, subject_ids: List[int] = None):
     """
     Run DTW-Calculations with all given Parameters and save results as json
     :param proportions: List with all test proportions that should be used (float)
@@ -185,6 +185,8 @@ def run_calculations(proportions: List[float], methods: List[str], subject_ids: 
     """
     if subject_ids is None:
         subject_ids = get_subject_list()
+    if methods is None:
+        methods = get_classes()
 
     if test_max_proportions(proportions=proportions):
         print("Test proportion test successful: All proportions are valid")
@@ -203,8 +205,8 @@ def run_calculations(proportions: List[float], methods: List[str], subject_ids: 
 
                     # Save results as json
                     try:
-                        path = os.path.join(MAIN_PATH, "../out")  # add /out to path
-                        path = os.path.join(path, "")  # add /alignments to path
+                        path = os.path.join(MAIN_PATH, "/out")  # add /out to path
+                        path = os.path.join(path, "/alignments")  # add /alignments to path
                         path = os.path.join(path, str(method))  # add /method to path
                         path = os.path.join(path, "test=" + str(proportion_test))  # add /test=0.XX to path
                         os.makedirs(path, exist_ok=True)
