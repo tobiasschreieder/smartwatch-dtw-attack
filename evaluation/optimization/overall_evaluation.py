@@ -9,7 +9,6 @@ from evaluation.optimization.window_evaluation import calculate_window_precision
 from preprocessing.data_preparation import get_subject_list
 from preprocessing.process_results import load_max_precision_results
 
-
 from typing import Dict, List, Union
 import os
 import statistics

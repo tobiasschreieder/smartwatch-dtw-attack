@@ -48,6 +48,3 @@ to /out/subject-plots"""
 """11. Overall evaluation with (DTW-results, maximum results, random guess results), save precision@k values as 
 MD-table"""
 # run_overall_evaluation()
-
-from alignments.dtw_alignment import calculate_full_subject_alignment
-calculate_full_subject_alignment(subject_id=2)

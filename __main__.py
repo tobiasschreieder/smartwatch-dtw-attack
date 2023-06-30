@@ -8,7 +8,6 @@ from evaluation.optimization.window_evaluation import run_window_evaluation
 from preprocessing.data_preparation import preprocess_data
 from evaluation.optimization.overall_evaluation import run_overall_evaluation
 
-
 import getopt
 import sys
 

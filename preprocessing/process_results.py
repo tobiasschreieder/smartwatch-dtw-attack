@@ -2,6 +2,7 @@ import json
 import os
 import statistics
 
+
 # Specify path
 MAIN_PATH = os.path.abspath(os.getcwd())
 OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path

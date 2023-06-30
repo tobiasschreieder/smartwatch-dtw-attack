@@ -10,7 +10,7 @@ from evaluation.optimization.window_evaluation import run_window_evaluation
 from preprocessing.data_preparation import get_subject_list
 from preprocessing.process_results import load_results
 
-from typing import List, Union
+from typing import List
 import os
 import matplotlib.pyplot as plt
 
