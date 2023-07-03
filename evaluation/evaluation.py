@@ -42,7 +42,7 @@ def run_calculate_max_precision(k_list: List[int], methods: List = None, proport
                 calculate_max_precision(k=k, step_width=step_width, method=method, proportion_test=proportion_test)
 
 
-def plot_realistic_ranks(path: os.path, method: str, proportion_test:float):
+def plot_realistic_ranks(path: os.path, method: str, proportion_test: float):
     """
     Plot and save realistic-rank-plot
     :param path: Path to save boxplot
@@ -60,16 +60,21 @@ def plot_realistic_ranks(path: os.path, method: str, proportion_test:float):
     plt.close()
 
 
-def subject_evaluation(methods: List[str], proportions_test: List[float], plot_ranks: bool = True, subject_list=None):
+def subject_evaluation(plot_ranks: bool = True, methods: List[str] = None, proportions_test: List[float] = None,
+                       subject_list: List[int] = None):
     """
     Create distance and rank-table for each subject
     :param methods: List with methods ("baseline", "amusement", "stress")
-    :param proportions_test: List with test-proportions
     :param plot_ranks: If True: realistic ranks will be plotted and saved
+    :param proportions_test: List with test-proportions
     :param subject_list: Specify subject-ids if None: all subjects are used
     """
+    if methods is None:
+        methods = get_classes()
     if subject_list is None:
         subject_list = get_subject_list()
+    if proportions_test is None:
+        proportions_test = get_proportions()
 
     for method in methods:
         for proportion_test in proportions_test:
@@ -104,7 +109,7 @@ def subject_evaluation(methods: List[str], proportions_test: List[float], plot_r
                 for item in text:
                     outfile.write("%s\n" % item)
 
-            print("SW-DTW subject-plot for method = " + str(method) + "and test-proportion = " + str(proportion_test) +
+            print("SW-DTW subject-plot for method = " + str(method) + " and test-proportion = " + str(proportion_test) +
                   " saved at: " + str(path))
 
             # Plot realistic ranks as boxplot
@@ -116,13 +121,18 @@ def subject_evaluation(methods: List[str], proportions_test: List[float], plot_r
                   str(proportion_test) + " saved at: " + str(path))
 
 
-def precision_evaluation(methods: List[str], proportions_test: List[float], k_list: List[int] = None):
+def precision_evaluation(methods: List[str] = None, proportions_test: List[float] = None, k_list: List[int] = None):
     """
     Evaluate DTW alignments with precision@k
     :param methods: List with methods ("baseline", "amusement", "stress")
     :param proportions_test: List with test-proportions
     :param k_list: Specify k parameters in precision table; if None: all k [1 - len(subjects)] are shown
     """
+    if methods is None:
+        methods = get_classes()
+    if proportions_test is None:
+        proportions_test = get_proportions()
+
     for method in methods:
         for proportion_test in proportions_test:
             text = list()

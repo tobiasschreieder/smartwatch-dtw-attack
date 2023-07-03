@@ -11,7 +11,7 @@ MAIN_PATH = os.path.abspath(os.getcwd())
 DATA_PATH = os.path.join(MAIN_PATH, "dataset")  # add /dataset to path
 
 CLASSES = ["baseline", "amusement", "stress"]
-PROPORTIONS_TEST = [0.01, 0.02, 0.05, 0.1]
+PROPORTIONS_TEST = [0.001, 0.005, 0.01, 0.02, 0.05, 0.1]
 
 
 def get_classes() -> List[str]:
