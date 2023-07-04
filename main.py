@@ -51,4 +51,4 @@ to /out/subject-plots"""
 
 """12. Overall evaluation with (DTW-results, maximum results, random guess results), save precision@k values as 
 MD-table"""
-# run_overall_evaluation()
+# run_overall_evaluation(save_weightings=True)

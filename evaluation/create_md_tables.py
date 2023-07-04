@@ -287,14 +287,16 @@ def create_md_precision_windows(rank_method: str, average_method: str, sensor_co
 
 
 def create_md_precision_overall(results: Dict[int, Dict[str, float]], rank_method: str, average_method: str,
-                                sensor_combination: str, window: float) -> str:
+                                sensor_combination: str, window: float,
+                                weightings: Dict[str, Dict[int, List[Dict[str, float]]]]) -> str:
     """
-    Create text for MD-file with results of overall evaluation
+    Create text for MD-file with results of overall evaluation and best sensor-weightings
     :param results: Results with precision values (DTW-results, maximum results, random guess results)
     :param rank_method: Specify rank-method ("score" or "rank")
     :param average_method: Specify averaging-method ("mean" or "weighted-mean)
     :param sensor_combination: Specify sensor-combination e.g. "acc+temp" (Choose best one)
     :param window: Specify best window-size
+    :param weightings: Specify best sensor-weightings
     :return: String with MD text
     """
     text = "# Evaluation overall: \n"
@@ -309,5 +311,15 @@ def create_md_precision_overall(results: Dict[int, Dict[str, float]], rank_metho
     for k in results:
         text += "| " + str(k) + " | " + str(results[k]["results"]) + " | " + str(results[k]["max"]) + " | " + \
                 str(results[k]["random"]) + " |" + "\n"
+
+    text += "## Sensor-weighting tables: \n"
+    for method in weightings:
+        text += "### Table for method: '" + str(method) + "': \n"
+        text += "| k | acc | bvp | eda | temp | \n"
+        text += "|---|---|---|---|---| \n"
+        for k in weightings[method]:
+            for weights in weightings[method][k]:
+                text += "| " + str(k) + " | " + str(weights["acc"]) + " | " + str(weights["bvp"]) + " | " + \
+                        str(weights["eda"]) + " | " + str(weights["temp"]) + " |" + "\n"
 
     return text

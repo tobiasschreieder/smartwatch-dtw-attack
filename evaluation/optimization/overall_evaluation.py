@@ -1,3 +1,4 @@
+from alignments.dtw_attack import get_classes
 from evaluation.create_md_tables import create_md_precision_overall
 from evaluation.optimization.class_evaluation import calculate_average_class_precisions, get_best_class_configuration, \
     get_class_distribution
@@ -12,6 +13,7 @@ from preprocessing.process_results import load_max_precision_results
 from typing import Dict, List, Union
 import os
 import statistics
+import json
 
 
 MAIN_PATH = os.path.abspath(os.getcwd())
@@ -115,17 +117,42 @@ def calculate_optimized_precisions() -> Dict[int, Dict[str, float]]:
     return overall_results
 
 
-def run_overall_evaluation():
+def get_best_sensor_weightings(window_size: float, methods: List[str] = None, k_list: List[int] = None) \
+        -> Dict[str, Dict[int, List[Dict[str, float]]]]:
+    """
+    Calculate best sensor-weightings for specified window-size
+    :param window_size: Specify window-size (test-proportion)
+    :param methods: List with methods (baseline, amusement, stress); if None: all methods are used
+    :param k_list: Specify k parameters for precision@k; if None: 1, 3, 5 are used
+    :return: Dictionary with weighting results
+    """
+    if methods is None:
+        methods = get_classes()
+    if k_list is None:
+        k_list = [1, 3, 5]
+
+    weightings = dict()
+    for method in methods:
+        weightings.setdefault(method, dict())
+        for k in k_list:
+            results = load_max_precision_results(k=k, method=method, proportion_test=window_size)
+            weightings[method].setdefault(k, results["weights"])
+
+    return weightings
+
+
+def run_overall_evaluation(save_weightings: bool = False):
     """
     Run and save overall evaluation (DTW-results, maximum results, random guess results)
     """
     best_configuration = calculate_best_configurations()
     overall_results = calculate_optimized_precisions()
+    weightings = get_best_sensor_weightings(window_size=best_configuration["window"])
 
     text = [create_md_precision_overall(results=overall_results, rank_method=best_configuration["rank_method"],
                                         average_method=best_configuration["class"],
                                         sensor_combination=list_to_string(input_list=best_configuration["sensor"][0]),
-                                        window=best_configuration["window"])]
+                                        window=best_configuration["window"], weightings=weightings)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)
@@ -136,3 +163,11 @@ def run_overall_evaluation():
             outfile.write("%s\n" % item)
 
     print("SW-DTW evaluation overall saved at: " + str(EVALUATIONS_PATH))
+
+    # Save weightings as JSON-File
+    if save_weightings:
+        path_string = "/SW-DTW_evaluation_weightings.json"
+        with open(EVALUATIONS_PATH + path_string, "w", encoding="utf-8") as outfile:
+            json.dump(weightings, outfile)
+
+        print("SW-DTW evaluation weightings saved at: " + str(EVALUATIONS_PATH))
