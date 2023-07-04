@@ -6,7 +6,7 @@ from preprocessing.data_preparation import get_subject_list
 from typing import List, Dict
 
 
-def bold_minimums(value, sensor: str, results):
+def bold_minimums(value, sensor: str, results) -> str:
     """
     Bold minimum scores for md-table
     :param value: Value to bold
@@ -32,7 +32,7 @@ def bold_minimums(value, sensor: str, results):
     return text
 
 
-def bold_subject(subject: int, check_subject: int):
+def bold_subject(subject: int, check_subject: int) -> str:
     """
     Bold subject with minimum score
     :param subject: subject to check if it should be bolded
@@ -47,7 +47,7 @@ def bold_subject(subject: int, check_subject: int):
     return text
 
 
-def create_md_distances(results, subject_id: int):
+def create_md_distances(results, subject_id: int) -> str:
     """
     Create md-table with results
     :param results: Dictionary with results
@@ -68,7 +68,7 @@ def create_md_distances(results, subject_id: int):
     return text
 
 
-def create_md_ranks(overall_ranks, individual_ranks, subject_id):
+def create_md_ranks(overall_ranks, individual_ranks, subject_id) -> str:
     """
     Create md-file for overall precision@k scores with methods "rank" and "score"
     :param overall_ranks:

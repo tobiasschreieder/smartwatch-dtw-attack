@@ -2,7 +2,7 @@ from preprocessing.data_preparation import get_subject_list
 from evaluation.metrics.calculate_ranks import run_calculate_ranks, realistic_rank, get_realistic_ranks_combinations
 from preprocessing.process_results import load_results
 
-from typing import List
+from typing import List, Dict, Union
 import json
 import os
 
@@ -39,7 +39,7 @@ def calculate_precision(subject_ids: List[int], k: int, rank_method: str, method
     return precision
 
 
-def calculate_precision_combinations(realistic_ranks_comb, k: int):
+def calculate_precision_combinations(realistic_ranks_comb, k: int) -> Dict[str, float]:
     """
     Calculate precision@k scores for sensor combinations
     :param realistic_ranks_comb: Dictionary with rank combinations
@@ -59,7 +59,8 @@ def calculate_precision_combinations(realistic_ranks_comb, k: int):
     return precision_comb
 
 
-def calculate_max_precision(k: int, step_width: float, method: str, proportion_test: float) -> float:
+def calculate_max_precision(k: int, step_width: float, method: str, proportion_test: float) \
+        -> Dict[str, Union[float, List[float]]]:
     """
     Calculate and save maximum possible precision value with all sensor weight characteristics
     :param k: Specify k for precision@k

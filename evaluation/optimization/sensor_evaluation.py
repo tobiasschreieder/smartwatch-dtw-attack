@@ -41,7 +41,7 @@ def string_to_list(input_string: str) -> List[List[str]]:
 
 
 def calculate_sensor_precisions(rank_method: str = "score", average_method: str = "weighted-mean",
-                                subject_ids: List[int] = None):
+                                subject_ids: List[int] = None) -> Dict[int, Dict[str, float]]:
     """
     Calculate precisions per sensor-combination, mean over classes and test-proportions
     :param rank_method: Specify rank-method "score" or "rank" (Choose best one)

@@ -2,7 +2,7 @@ from preprocessing.data_preparation import load_dataset, get_subject_list
 
 from dtw import *
 import pandas as pd
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import json
 import os
 
@@ -33,7 +33,8 @@ def create_full_subject_data() -> Dict[int, Dict[str, pd.DataFrame]]:
     return subject_data
 
 
-def calculate_complete_subject_alignment(subject_id: int):
+def calculate_complete_subject_alignment(subject_id: int) \
+        -> Tuple[Dict[int, Dict[str, float]], Dict[int, Dict[str, float]]]:
     """
     Calculate dtw-alignments for all sensors and subjects (no train-test split)
     :param subject_id: Specify subject-id

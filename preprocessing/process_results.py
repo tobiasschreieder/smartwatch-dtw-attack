@@ -1,6 +1,7 @@
 import json
 import os
 import statistics
+from typing import Dict, Union, List
 
 
 # Specify path
@@ -10,7 +11,8 @@ ALIGNMENT_PATH = os.path.join(OUT_PATH, "alignments")  # add /alignments to path
 PRECISION_PATH = os.path.join(OUT_PATH, "precision")  # add /precision to path
 
 
-def load_results(subject_id: int, method: str, proportion_test: float, normalized_data: bool = True):
+def load_results(subject_id: int, method: str, proportion_test: float, normalized_data: bool = True) \
+        -> Dict[str, Dict[str, float]]:
     """
     Load results from ../out/results/
     :param subject_id: Specify subject
@@ -45,7 +47,8 @@ def load_results(subject_id: int, method: str, proportion_test: float, normalize
     return results
 
 
-def load_max_precision_results(method: str, proportion_test: float, k: int):
+def load_max_precision_results(method: str, proportion_test: float, k: int) \
+        -> Dict[str, Union[float, List[Dict[str, float]]]]:
     """
     Load max-precision results
     :param method: Specify method

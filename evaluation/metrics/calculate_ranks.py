@@ -1,7 +1,7 @@
 from preprocessing.data_preparation import get_subject_list
 from preprocessing.process_results import load_results
 
-from typing import List
+from typing import List, Dict, Tuple, Any
 import statistics
 import math
 import copy
@@ -10,11 +10,11 @@ import copy
 SUBJECT_LIST = get_subject_list()
 
 
-def calculate_ranks_1(results):
+def calculate_ranks_1(results: Dict[str, Dict[str, float]]) -> Tuple[Dict[str, int], Dict[str, Dict[str, Any]]]:
     """
-    Calculate unique ranks by averaging individual ranks
-    :param results:
-    :return:
+    Calculate unique ranks by averaging individual ranks (method = "rank")
+    :param results: Dictionary with results
+    :return: Tuple with Dictionaries of overall_results and rank_results
     """
     result_lists = dict()
     for i in results:
@@ -47,11 +47,12 @@ def calculate_ranks_1(results):
     return overall_ranks, rank_results
 
 
-def calculate_ranks_2(results):
+def calculate_ranks_2(results: Dict[str, Dict[str, float]]) \
+        -> Tuple[Dict[str, int], Dict[str, Dict[str, Any]]]:
     """
-    Calculate unique ranks by averaging calculated scores
-    :param results:
-    :return:
+    Calculate unique ranks by averaging calculated scores (method = "score")
+    :param results: Dictionary with results
+    :return: Tuple with Dictionaries of overall_results and rank_results
     """
     result_lists = dict()
     for i in results:
@@ -84,12 +85,13 @@ def calculate_ranks_2(results):
     return overall_ranks, rank_results
 
 
-def run_calculate_ranks(results, method):
+def run_calculate_ranks(results: Dict[str, Dict[str, float]], method: str) \
+        -> Tuple[Dict[str, int], Dict[str, Dict[str, Any]]]:
     """
     Method to calculate unique scores with specified averaging method
-    :param results:
-    :param method:
-    :return:
+    :param results: Dictionary with results
+    :param method: Specify method ("rank" or "score")
+    :return: Tuple with Dictionaries of overall_results and rank_results
     """
     # Calculate ranks
     overall_ranks = dict()
