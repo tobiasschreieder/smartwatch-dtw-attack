@@ -11,8 +11,8 @@ def bold_minimums(value, sensor: str, results) -> str:
     Bold minimum scores for md-table
     :param value: Value to bold
     :param sensor: Specify sensor
-    :param results:
-    :return:
+    :param results: Dictionary with results
+    :return: Bolded text
     """
     text = str(value)
     sensor_results = list()
@@ -161,11 +161,13 @@ def create_md_precision_combinations(rank_method: str, method: str, proportion_t
     return text
 
 
-def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], best_rank_method: str) -> str:
+def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], best_rank_method: str,
+                                    best_k_parameters: Dict[str, int]) -> str:
     """
     Create text for MD-file with results of rank-method evaluation
     :param results: Results with precision values
     :param best_rank_method: Specify best rank-method
+    :param best_k_parameters: Specify best k parameters
     :return: String with MD text
     """
     text = "# Evaluation of Rank-Methods: \n"
@@ -179,12 +181,16 @@ def create_md_precision_rank_method(results: Dict[int, Dict[str, float]], best_r
         text += "| " + str(k) + " | " + str(results[k]["rank"]) + " | " + str(results[k]["score"]) + " | " + \
                 str(results[k]["mean"]) + " |" + "\n"
 
+    text += "| max@k | " + "k = " + str(best_k_parameters["rank"]) + " | " + "k = " + str(best_k_parameters["score"]) \
+            + " | " + "k = " + str(best_k_parameters["mean"]) + " |" + "\n"
+
     return text
 
 
 def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, float]],
                                 average_results: Dict[int, float], weighted_average_results: Dict[int, float],
-                                best_class_method: str) -> str:
+                                best_class_method: str, best_k_parameters: Dict[str, int],
+                                best_average_k_parameters: Dict[str, int]) -> str:
     """
     Create text for MD-file with results of class evaluation
     :param rank_method: Specify rank-method ("score" or "rank")
@@ -192,6 +198,8 @@ def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, f
     :param average_results: Results with average precision values
     :param weighted_average_results: Results with weighted average precision values
     :param best_class_method: Specify best class-method
+    :param best_k_parameters: Specify best k parameters
+    :param best_average_k_parameters: Specify best average k parameters
     :return: String with MD text
     """
     text = "# Evaluation of Classes: \n"
@@ -207,6 +215,9 @@ def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, f
         text += "| " + str(k) + " | " + str(results[k]["baseline"]) + " | " + str(results[k]["amusement"]) + " | " + \
                 str(results[k]["stress"]) + " |" + "\n"
 
+    text += "| max@k | " + "k = " + str(best_k_parameters["baseline"]) + " | " + "k = " + \
+            str(best_k_parameters["amusement"]) + " | " + "k = " + str(best_k_parameters["stress"]) + " |" + "\n"
+
     text += "## Overall Evaluation: \n"
     text += "### Precision@k table: \n"
     text += "| k | mean | weighted mean |" + "\n"
@@ -214,6 +225,9 @@ def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, f
 
     for k in average_results:
         text += "| " + str(k) + " | " + str(average_results[k]) + " | " + str(weighted_average_results[k]) + " |" + "\n"
+
+    text += "| max@k | " + "k = " + str(best_average_k_parameters["mean"]) + " | " + "k = " + \
+            str(best_average_k_parameters["weighted-mean"]) + " |" + "\n"
 
     return text
 

@@ -41,18 +41,20 @@ def string_to_list(input_string: str) -> List[List[str]]:
 
 
 def calculate_sensor_precisions(rank_method: str = "score", average_method: str = "weighted-mean",
-                                subject_ids: List[int] = None) -> Dict[int, Dict[str, float]]:
+                                subject_ids: List[int] = None, k_list: List[int] = None) -> Dict[int, Dict[str, float]]:
     """
     Calculate precisions per sensor-combination, mean over classes and test-proportions
     :param rank_method: Specify rank-method "score" or "rank" (Choose best one)
     :param average_method: Specify averaging-method "mean" or "weighted-mean" (Choose best one)
     :param subject_ids: Specify subject-ids, if None: all subjects are used
+    :param k_list: Specify k parameters; if None: 1, 3, 5 are used
     :return: Dictionary with results
     """
     sensor_combinations = get_sensor_combinations()  # Get all sensor-combinations
     classes = get_classes()  # Get all classes
     proportions_test = get_proportions()  # Get all test-proportions
-    k_list = [1, 3, 5]  # List with all k for precision@k that should be considered
+    if k_list is None:
+        k_list = [1, 3, 5]  # List with all k for precision@k that should be considered
     class_distributions = get_class_distribution()  # Get class distributions
 
     if subject_ids is None:

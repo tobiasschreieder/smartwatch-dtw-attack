@@ -18,7 +18,7 @@ EVALUATIONS_PATH = os.path.join(OUT_PATH, "evaluations")  # add /evaluations to 
 
 
 def calculate_window_precisions(rank_method: str = "score", average_method: str = "weighted-mean",
-                                sensor_combination=None, subject_ids: List = None) \
+                                sensor_combination=None, subject_ids: List = None, k_list: List[int] = None) \
         -> Dict[int, Dict[float, float]]:
     """
     Calculate precisions per test-proportion ("baseline", "amusement", "stress"), mean over sensors and test-proportions
@@ -26,12 +26,14 @@ def calculate_window_precisions(rank_method: str = "score", average_method: str 
     :param average_method: Specify averaging-method "mean" or "weighted-mean" (Choose best one)
     :param sensor_combination: Specify sensor-combination e.g. [["acc", "temp"]] (Choose best on)
     :param subject_ids: Specify subject-ids, if None: all subjects are used
+    :param k_list: Specify k parameters; if None: 1, 3, 5 are used
     :return: Dictionary with results
     """
 
     classes = get_classes()  # Get all classes
     proportions_test = get_proportions()  # Get all test-proportions
-    k_list = [1, 3, 5]  # List with all k for precision@k that should be considered
+    if k_list is None:
+        k_list = [1, 3, 5]  # List with all k for precision@k that should be considered
     class_distributions = get_class_distribution()  # Get class distributions
 
     if subject_ids is None:

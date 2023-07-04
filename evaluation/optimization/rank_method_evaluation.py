@@ -16,16 +16,18 @@ OUT_PATH = os.path.join(MAIN_PATH, "out")  # add /out to path
 EVALUATIONS_PATH = os.path.join(OUT_PATH, "evaluations")  # add /evaluations to path
 
 
-def calculate_rank_method_precisions(subject_ids: List = None) -> Dict[int, Dict[str, float]]:
+def calculate_rank_method_precisions(subject_ids: List = None, k_list: List[int] = None) -> Dict[int, Dict[str, float]]:
     """
     Calculate precision@k values for rank-method evaluation -> Mean over sensor-combinations, methods
     :param subject_ids: Specify subject-ids, if None: all subjects are used
+    :param k_list: Specify k parameters; if None: 1, 3, 5 are used
     :return: Dictionary with precision values
     """
     sensor_combinations = get_sensor_combinations()  # Get all sensor-combinations
     classes = get_classes()  # Get all classes
     proportions_test = get_proportions()  # Get all test-proportions
-    k_list = [1, 3, 5]  # List with all k for precision@k that should be considered
+    if k_list is None:
+        k_list = [1, 3, 5]  # List with all k for precision@k that should be considered
 
     if subject_ids is None:
         subject_ids = get_subject_list()
@@ -105,6 +107,31 @@ def calculate_rank_method_precisions(subject_ids: List = None) -> Dict[int, Dict
     return results
 
 
+def calculate_best_k_parameters() -> Dict[str, int]:
+    """
+    Calculate k-parameters where precision@k == 1
+    :return: Dictionary with results
+    """
+    amount_subjects = len(get_subject_list())
+    k_list = list(range(1, amount_subjects + 1))  # List with all possible k parameters
+    results = calculate_rank_method_precisions(k_list=k_list)
+    best_k_parameters = dict()
+
+    for k in results:
+        set_method = False
+        for method, value in results[k].items():
+            if set_method is False:
+                if value == 1.0:
+                    best_k_parameters.setdefault(method, 1)
+                else:
+                    best_k_parameters.setdefault(method, amount_subjects)
+                set_method = True
+            elif value == 1.0 and set_method is True:
+                best_k_parameters.setdefault(method, k)
+
+    return best_k_parameters
+
+
 def get_best_rank_method_configuration(res: Dict[int, Dict[str, float]]) -> str:
     """
     Calculate best ranking-method configuration "score" or "rank" from given results
@@ -131,7 +158,9 @@ def run_rank_method_evaluation():
     """
     results = calculate_rank_method_precisions()
     best_rank_method = get_best_rank_method_configuration(res=results)
-    text = [create_md_precision_rank_method(results=results, best_rank_method=best_rank_method)]
+    best_k_parameters = calculate_best_k_parameters()
+    text = [create_md_precision_rank_method(results=results, best_rank_method=best_rank_method,
+                                            best_k_parameters=best_k_parameters)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)

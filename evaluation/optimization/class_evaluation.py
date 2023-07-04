@@ -47,17 +47,20 @@ def get_class_distribution() -> Dict[str, float]:
     return {"amusement": amusement_proportion, "baseline": baseline_proportion, "stress": stress_proportion}
 
 
-def calculate_class_precisions(rank_method: str = "score", subject_ids: List = None) -> Dict[int, Dict[str, float]]:
+def calculate_class_precisions(rank_method: str = "score", subject_ids: List = None, k_list: List[int] = None) \
+        -> Dict[int, Dict[str, float]]:
     """
     Calculate precisions per class ("baseline", "amusement", "stress"), mean over sensors and test-proportions
     :param rank_method: Specify rank-method "score" or "rank" (use beste rank-method)
     :param subject_ids: Specify subject-ids, if None: all subjects are used
+    :param k_list: Specify k parameters; if None: 1, 3, 5 are used
     :return: Dictionary with results
     """
     sensor_combinations = get_sensor_combinations()  # Get all sensor-combinations
     classes = get_classes()  # Get all classes
     proportions_test = get_proportions()  # Get all test-proportions
-    k_list = [1, 3, 5]  # List with all k for precision@k that should be considered
+    if k_list is None:
+        k_list = [1, 3, 5]  # List with all k for precision@k that should be considered
 
     if subject_ids is None:
         subject_ids = get_subject_list()
@@ -98,15 +101,19 @@ def calculate_class_precisions(rank_method: str = "score", subject_ids: List = N
     return results
 
 
-def calculate_average_class_precisions(rank_method: str = "score", subject_ids: List = None) \
+def calculate_average_class_precisions(rank_method: str = "score", subject_ids: List = None, k_list: List[int] = None) \
         -> Tuple[Dict[int, float], Dict[int, int]]:
     """
     Calculate average class precision values (mean and weighted mean over classes)
     :param rank_method: Specify rank-method "score" or "rank" (use beste rank-method)
     :param subject_ids: Specify subject-ids, if None: all subjects are used
+    :param k_list: Specify k parameters; if None: 1, 3, 5 are used
     :return: Tuple with result dictionaries
     """
-    results = calculate_class_precisions(rank_method=rank_method, subject_ids=subject_ids)
+    if k_list is None:
+        k_list = [1, 3, 5]  # List with all k for precision@k that should be considered
+
+    results = calculate_class_precisions(rank_method=rank_method, subject_ids=subject_ids, k_list=k_list)
     class_distribution = get_class_distribution()
 
     average_results = dict()
@@ -123,6 +130,58 @@ def calculate_average_class_precisions(rank_method: str = "score", subject_ids: 
         weighted_average_results[k] = round(weighted_average_precision, 3)
 
     return average_results, weighted_average_results
+
+
+def calculate_best_k_parameters(rank_method: str) -> Dict[str, int]:
+    """
+    Calculate k-parameters where precision@k == 1
+    :param rank_method: Specify ranking-method ("score" or "rank")
+    :return: Dictionary with results
+    """
+    amount_subjects = len(get_subject_list())
+    k_list = list(range(1, amount_subjects + 1))  # List with all possible k parameters
+    results = calculate_class_precisions(k_list=k_list, rank_method=rank_method)
+    best_k_parameters = dict()
+
+    for k in results:
+        set_method = False
+        for method, value in results[k].items():
+            if set_method is False:
+                if value == 1.0:
+                    best_k_parameters.setdefault(method, 1)
+                else:
+                    best_k_parameters.setdefault(method, amount_subjects)
+                set_method = True
+            elif value == 1.0 and set_method is True:
+                best_k_parameters.setdefault(method, k)
+
+    return best_k_parameters
+
+
+def calculate_best_average_k_parameters(rank_method: str) -> Dict[str, int]:
+    """
+    Calculate k-parameters where precision@k == 1 for average-classes
+    :param rank_method: Specify ranking-method ("score" or "rank")
+    :return: Dictionary with results
+    """
+    amount_subjects = len(get_subject_list())
+    k_list = list(range(1, amount_subjects + 1))  # List with all possible k parameters
+    average_results, weighted_average_results = calculate_average_class_precisions(rank_method=rank_method,
+                                                                                   k_list=k_list)
+    best_average_k_parameters = dict()
+    set_k = False
+    for k, value in average_results.items():
+        if set_k is False and value == 1.0:
+            best_average_k_parameters.setdefault("mean", k)
+            set_k = True
+
+    set_k = False
+    for k, value in weighted_average_results.items():
+        if set_k is False and value == 1.0:
+            best_average_k_parameters.setdefault("weighted-mean", k)
+            set_k = True
+
+    return best_average_k_parameters
 
 
 def get_best_class_configuration(average_res: Dict[int, float], weighted_average_res: Dict[int, float]) -> str:
@@ -155,10 +214,13 @@ def run_class_evaluation(rank_method: str = "score"):
     average_results, weighted_average_results = calculate_average_class_precisions(rank_method=rank_method)
     best_class_method = get_best_class_configuration(average_res=average_results,
                                                      weighted_average_res=weighted_average_results)
+    best_k_parameters = calculate_best_k_parameters(rank_method=rank_method)
+    best_average_k_parameters = calculate_best_average_k_parameters(rank_method=rank_method)
 
     text = [create_md_precision_classes(rank_method=rank_method, results=results, average_results=average_results,
                                         weighted_average_results=weighted_average_results,
-                                        best_class_method=best_class_method)]
+                                        best_class_method=best_class_method, best_k_parameters=best_k_parameters,
+                                        best_average_k_parameters=best_average_k_parameters)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)
