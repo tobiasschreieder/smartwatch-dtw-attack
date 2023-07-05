@@ -280,7 +280,7 @@ def create_md_precision_windows(rank_method: str, average_method: str, sensor_co
     :param average_method: Specify averaging-method ("mean" or "weighted-mean)
     :param sensor_combination: Specify sensor-combination e.g. "acc+temp" (Choose best one)
     :param results: Results with precision values per class
-    :param best_window: Specify best window
+    :param best_window: Specify best window (test-proportion) e.g. 0.001
     :param best_k_parameters: Specify best k parameters
     :return: String with MD text
     """
@@ -315,15 +315,17 @@ def create_md_precision_windows(rank_method: str, average_method: str, sensor_co
 
 def create_md_precision_overall(results: Dict[int, Dict[str, float]], rank_method: str, average_method: str,
                                 sensor_combination: str, window: float,
-                                weightings: Dict[str, Dict[int, List[Dict[str, float]]]]) -> str:
+                                weightings: Dict[str, Dict[int, List[Dict[str, float]]]],
+                                best_k_parameters: Dict[str, int]) -> str:
     """
     Create text for MD-file with results of overall evaluation and best sensor-weightings
     :param results: Results with precision values (DTW-results, maximum results, random guess results)
     :param rank_method: Specify rank-method ("score" or "rank")
     :param average_method: Specify averaging-method ("mean" or "weighted-mean)
     :param sensor_combination: Specify sensor-combination e.g. "acc+temp" (Choose best one)
-    :param window: Specify best window-size
+    :param window: Specify best window-size (test-proportion) e.g. 0.001
     :param weightings: Specify best sensor-weightings
+    :param best_k_parameters: Specify best k parameters
     :return: String with MD text
     """
     text = "# Evaluation overall: \n"
@@ -338,6 +340,9 @@ def create_md_precision_overall(results: Dict[int, Dict[str, float]], rank_metho
     for k in results:
         text += "| " + str(k) + " | " + str(results[k]["results"]) + " | " + str(results[k]["max"]) + " | " + \
                 str(results[k]["random"]) + " |" + "\n"
+
+    text += "| max@k | " + "k = " + str(best_k_parameters["results"]) + " | " + "k = " + str(best_k_parameters["max"]) \
+            + " | " + "k = " + str(best_k_parameters["random"]) + " |" + "\n"
 
     text += "## Sensor-weighting tables: \n"
     for method in weightings:

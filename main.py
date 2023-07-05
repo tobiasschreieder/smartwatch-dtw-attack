@@ -41,13 +41,14 @@ to /out/subject-plots"""
 # run_sensor_evaluation(rank_method="score", average_method="weighted-mean")
 
 """9. Evaluation of windows, save precision@k values as MD-table"""
-# run_window_evaluation(rank_method="score", average_method="weighted-mean", sensor_combination=[["acc", "temp"]])
+# run_window_evaluation(rank_method="score", average_method="weighted-mean",
+#                       sensor_combination=[["bvp", "acc", "temp"]])
 
 """10. Complete optimization evaluation, save precision@k values as MD-table"""
 # run_optimization_evaluation()
 
 """11. Calculate maximum precisions, save precision@k values as json file"""
-# run_calculate_max_precision(k_list=[1, 3, 5])
+# run_calculate_max_precision(k_list=list(range(1, 15 + 1)))
 
 """12. Overall evaluation with (DTW-results, maximum results, random guess results), save precision@k values as 
 MD-table"""

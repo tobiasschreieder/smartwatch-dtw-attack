@@ -92,15 +92,18 @@ def get_random_guess_precision(k: int) -> float:
     return result
 
 
-def calculate_optimized_precisions() -> Dict[int, Dict[str, float]]:
+def calculate_optimized_precisions(k_list: List[int] = None) -> Dict[int, Dict[str, float]]:
     """
     Calculate overall evaluation precision scores (DTW-results, maximum results and random guess results)
     :return: Dictionary with results
     """
+    if k_list is None:
+        k_list = [1, 3, 5]
+
     best_configuration = calculate_best_configurations()
     results = calculate_window_precisions(rank_method=best_configuration["rank_method"],
                                           average_method=best_configuration["class"],
-                                          sensor_combination=best_configuration["sensor"])
+                                          sensor_combination=best_configuration["sensor"], k_list=k_list)
 
     overall_results = dict()
     for k in results:
@@ -115,6 +118,32 @@ def calculate_optimized_precisions() -> Dict[int, Dict[str, float]]:
         overall_results[k].setdefault("random", get_random_guess_precision(k=k))
 
     return overall_results
+
+
+def calculate_best_k_parameters() -> Dict[str, int]:
+    """
+    Calculate k-parameters where precision@k == 1
+    :return: Dictionary with results
+    """
+    amount_subjects = len(get_subject_list())
+    k_list = list(range(1, amount_subjects + 1))  # List with all possible k parameters
+    results = calculate_optimized_precisions(k_list=k_list)
+    best_k_parameters = dict()
+
+    set_method = False
+    for k in results:
+        for method, value in results[k].items():
+            if set_method is False:
+                if value == 1.0:
+                    best_k_parameters.setdefault(method, 1)
+                else:
+                    best_k_parameters.setdefault(method, amount_subjects)
+            elif value == 1.0 and set_method is True:
+                if best_k_parameters[method] > k:
+                    best_k_parameters[method] = k
+        set_method = True
+
+    return best_k_parameters
 
 
 def get_best_sensor_weightings(window_size: float, methods: List[str] = None, k_list: List[int] = None) \
@@ -148,11 +177,13 @@ def run_overall_evaluation(save_weightings: bool = False):
     best_configuration = calculate_best_configurations()
     overall_results = calculate_optimized_precisions()
     weightings = get_best_sensor_weightings(window_size=best_configuration["window"])
+    best_k_parameters = calculate_best_k_parameters()
 
     text = [create_md_precision_overall(results=overall_results, rank_method=best_configuration["rank_method"],
                                         average_method=best_configuration["class"],
                                         sensor_combination=list_to_string(input_list=best_configuration["sensor"][0]),
-                                        window=best_configuration["window"], weightings=weightings)]
+                                        window=best_configuration["window"], weightings=weightings,
+                                        best_k_parameters=best_k_parameters)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)

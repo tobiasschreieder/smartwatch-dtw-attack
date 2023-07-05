@@ -2,6 +2,7 @@ from preprocessing.data_preparation import load_dataset, get_subject_list
 
 from dtw import *
 import pandas as pd
+import scipy.signal
 from typing import Dict, List, Tuple
 import json
 import os
@@ -11,47 +12,53 @@ MAIN_PATH = os.path.abspath(os.getcwd())
 DATA_PATH = os.path.join(MAIN_PATH, "dataset")  # add /dataset to path
 
 
-def create_full_subject_data() -> Dict[int, Dict[str, pd.DataFrame]]:
+def create_full_subject_data(subject_id: int, resample_factor: float) -> Dict[str, pd.DataFrame]:
     """
     Create dictionary with all subjects and their sensor data as Dataframe
+    :param subject_id: Specify subject_id
+    :param resample_factor: Specify down-sample factor (1: no down-sampling; 2: half-length)
     :return: Dictionary with subject_data
     """
     data_dict = load_dataset()
-    subject_data = dict()
 
-    for subject in data_dict:
+    sensor_data = {"bvp": scipy.signal.resample(data_dict[subject_id][["bvp"]],
+                                                round(len(data_dict[subject_id][["bvp"]]) / resample_factor)),
+                   "eda": scipy.signal.resample(data_dict[subject_id][["eda"]],
+                                                round(len(data_dict[subject_id][["eda"]]) / resample_factor)),
+                   "acc_x": scipy.signal.resample(data_dict[subject_id][["acc_x"]],
+                                                  round(len(data_dict[subject_id][["acc_x"]]) / resample_factor)),
+                   "acc_y": scipy.signal.resample(data_dict[subject_id][["acc_y"]],
+                                                  round(len(data_dict[subject_id][["acc_y"]]) / resample_factor)),
+                   "acc_z": scipy.signal.resample(data_dict[subject_id][["acc_z"]],
+                                                  round(len(data_dict[subject_id][["acc_z"]]) / resample_factor)),
+                   "temp": scipy.signal.resample(data_dict[subject_id][["temp"]],
+                                                 round(len(data_dict[subject_id][["temp"]]) / resample_factor))}
 
-        sensor_data = {"bvp": data_dict[subject][["bvp"]],
-                       "eda": data_dict[subject][["eda"]],
-                       "acc_x": data_dict[subject][["acc_x"]],
-                       "acc_y": data_dict[subject][["acc_y"]],
-                       "acc_z": data_dict[subject][["acc_z"]],
-                       "temp": data_dict[subject][["temp"]]}
-
-        subject_data.setdefault(subject, sensor_data)
-
-    return subject_data
+    return sensor_data
 
 
-def calculate_complete_subject_alignment(subject_id: int) \
+def calculate_complete_subject_alignment(subject_id: int, resample_factor: float) \
         -> Tuple[Dict[int, Dict[str, float]], Dict[int, Dict[str, float]]]:
     """
     Calculate dtw-alignments for all sensors and subjects (no train-test split)
     :param subject_id: Specify subject-id
+    :param resample_factor: Specify down-sample factor (1: no down-sampling; 2: half-length)
     :return: Tuple with Dictionaries of normalized and standard results
     """
     results_normalized = dict()
     results_standard = dict()
-    subject_data = create_full_subject_data()
+    subject_data_1 = create_full_subject_data(resample_factor=resample_factor, subject_id=subject_id)
+    subject_list = get_subject_list()
 
-    for subject in subject_data:
-        print("----Current subject: " + str(subject))
+    for subject in subject_list:
+        print("--Current subject: " + str(subject))
+        subject_data_2 = create_full_subject_data(resample_factor=resample_factor, subject_id=subject)
         results_normalized.setdefault(subject, dict())
         results_standard.setdefault(subject, dict())
 
-        for sensor in subject_data[subject]:
-            test = subject_data[subject_id][sensor]
-            train = subject_data[subject][sensor]
+        for sensor in subject_data_2:
+            test = subject_data_1[sensor]
+            train = subject_data_2[sensor]
 
             alignment = dtw(train, test, keep_internals=False)
             distance_normalized = alignment.normalizedDistance
@@ -63,9 +70,10 @@ def calculate_complete_subject_alignment(subject_id: int) \
     return results_normalized, results_standard
 
 
-def run_dtw_alignments(subject_ids: List[int] = None):
+def run_dtw_alignments(resample_factor: float = 2, subject_ids: List[int] = None):
     """
     Run DTW-Calculations with all given parameters and save results as json (no train-test split)
+    :param resample_factor: Specify down-sample factor (1: no down-sampling; 2: half-length)
     :param subject_ids: List with all subjects that should be used as test subjects (int) -> None = all subjects
     """
     if subject_ids is None:
@@ -75,7 +83,8 @@ def run_dtw_alignments(subject_ids: List[int] = None):
     for subject_id in subject_ids:
         print("-Current id: " + str(subject_id))
 
-        results_normalized, results_standard = calculate_complete_subject_alignment(subject_id=subject_id)
+        results_normalized, results_standard = calculate_complete_subject_alignment(subject_id=subject_id,
+                                                                                    resample_factor=resample_factor)
 
         # Save results as json
         try:
