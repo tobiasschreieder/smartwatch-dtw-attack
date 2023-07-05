@@ -105,12 +105,12 @@ def run_calculate_ranks(results: Dict[str, Dict[str, float]], method: str) \
     return overall_ranks, rank_results
 
 
-def realistic_rank(overall_ranks, subject_id):
+def realistic_rank(overall_ranks: Dict[str, int], subject_id: int) -> int:
     """
-    Calculate Realistic rank (if no clear decision possible, then pessimistic rank is used)
-    :param overall_ranks:
-    :param subject_id:
-    :return:
+    Calculate realistic rank (if no clear decision possible, then pessimistic rank is used)
+    :param overall_ranks: Dictionary with overall ranks
+    :param subject_id: Specify subject-id
+    :return: Realistic rank
     """
     subject_rank = overall_ranks[str(subject_id)]
     smaller_ranks = dict()
@@ -153,7 +153,7 @@ def get_realistic_ranks(rank_method: str, method: str, proportion_test: float, s
     return sorted(real_ranks)
 
 
-def calculate_ranks_combinations_1(results, combination):
+def calculate_ranks_combinations_1(results: Dict[str, Dict[str, float]], combination: List[str]) -> Dict[str, int]:
     """
     Calculate ranks for all sensor combinations with method "rank"
     :param results: Dictionary with results
@@ -201,7 +201,7 @@ def calculate_ranks_combinations_1(results, combination):
     return overall_ranks
 
 
-def calculate_ranks_combinations_2(results, combination):
+def calculate_ranks_combinations_2(results: Dict[str, Dict[str, float]], combination: List[str]) -> Dict[str, int]:
     """
     Calculate ranks for all sensor combinations with method "score"
     :param results: Dictionary with results
@@ -226,7 +226,8 @@ def calculate_ranks_combinations_2(results, combination):
     return overall_ranks
 
 
-def calculate_ranks_combinations_3(results, combination, weights):
+def calculate_ranks_combinations_3(results: Dict[str, Dict[str, float]], combination: List[str],
+                                   weights: Dict[str, float]) -> Dict[str, int]:
     """
     Calculate weighted ranks for all sensor combinations with method "score"
     :param results: Dictionary with results
@@ -251,7 +252,9 @@ def calculate_ranks_combinations_3(results, combination, weights):
     return overall_ranks
 
 
-def run_calculate_ranks_combinations(results, rank_method, combinations, weights=None):
+def run_calculate_ranks_combinations(results: Dict[str, Dict[str, float]], rank_method: str,
+                                     combinations: List[List[str]], weights: Dict[str, float] = None) \
+        -> Dict[str, Dict[str, int]]:
     """
     Run calculation of rank combinations for one individual subject
     :param results: Dictionary with results
@@ -260,7 +263,7 @@ def run_calculate_ranks_combinations(results, rank_method, combinations, weights
     :param weights: Specify weights for ranking method "max"
     :return: Dictionary with ranking results
     """
-    def list_to_string(input_list):
+    def list_to_string(input_list: List[str]) -> str:
         """
         Get string for possible sensor-name combinations
         :param input_list: List to be transformed
@@ -279,16 +282,22 @@ def run_calculate_ranks_combinations(results, rank_method, combinations, weights
     overall_ranks_comb = dict()
     for comb in combinations:
         if rank_method == "rank":
-            overall_ranks_comb.setdefault(list_to_string(comb), calculate_ranks_combinations_1(results, comb))
+            overall_ranks_comb.setdefault(list_to_string(input_list=comb),
+                                          calculate_ranks_combinations_1(results=results, combination=comb))
         elif rank_method == "score":
-            overall_ranks_comb.setdefault(list_to_string(comb), calculate_ranks_combinations_2(results, comb))
+            overall_ranks_comb.setdefault(list_to_string(input_list=comb),
+                                          calculate_ranks_combinations_2(results=results, combination=comb))
         elif rank_method == "max":
-            overall_ranks_comb.setdefault(list_to_string(comb), calculate_ranks_combinations_3(results, comb, weights))
+            overall_ranks_comb.setdefault(list_to_string(input_list=comb),
+                                          calculate_ranks_combinations_3(results=results, combination=comb,
+                                                                         weights=weights))
 
     return overall_ranks_comb
 
 
-def get_realistic_ranks_combinations(rank_method, combinations, method, proportion_test, subject_ids=None, weights=None):
+def get_realistic_ranks_combinations(rank_method: str, combinations: List[List[str]], method: str,
+                                     proportion_test: float, subject_ids: List[int] = None,
+                                     weights: Dict[str, float] = None) -> Dict[str, List[int]]:
     """
     Get realistic ranks for sensor combination results
     :param rank_method: Choose ranking method ("rank", "score", "max")

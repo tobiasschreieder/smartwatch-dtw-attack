@@ -67,7 +67,7 @@ def calculate_max_precision(k: int, step_width: float, method: str, proportion_t
     :param step_width: Specify step_with for weights
     :param method: Specify method of alignments
     :param proportion_test: Specify test-proportion of alignments
-    :return: maximum-precision
+    :return: Maximum-precision
     """
     weight_precisions = list()
     steps = int(100/(step_width*100))

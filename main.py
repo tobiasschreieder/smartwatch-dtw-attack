@@ -48,7 +48,7 @@ to /out/subject-plots"""
 # run_optimization_evaluation()
 
 """11. Calculate maximum precisions, save precision@k values as json file"""
-# run_calculate_max_precision(k_list=list(range(1, 15 + 1)))
+# run_calculate_max_precision(k_list=[1])
 
 """12. Overall evaluation with (DTW-results, maximum results, random guess results), save precision@k values as 
 MD-table"""

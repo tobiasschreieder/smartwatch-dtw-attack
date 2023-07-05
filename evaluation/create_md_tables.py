@@ -6,7 +6,7 @@ from preprocessing.data_preparation import get_subject_list
 from typing import List, Dict
 
 
-def bold_minimums(value, sensor: str, results) -> str:
+def bold_minimums(value: float, sensor: str, results) -> str:
     """
     Bold minimum scores for md-table
     :param value: Value to bold
@@ -47,9 +47,9 @@ def bold_subject(subject: int, check_subject: int) -> str:
     return text
 
 
-def create_md_distances(results, subject_id: int) -> str:
+def create_md_distances(results: Dict[str, Dict[str, float]], subject_id: int) -> str:
     """
-    Create md-table with results
+    Create md-table with distance results
     :param results: Dictionary with results
     :param subject_id: Current subject_id
     :return: String with text
@@ -68,13 +68,13 @@ def create_md_distances(results, subject_id: int) -> str:
     return text
 
 
-def create_md_ranks(overall_ranks, individual_ranks, subject_id) -> str:
+def create_md_ranks(overall_ranks: Dict[str, int], individual_ranks: Dict[str, Dict[str, int]], subject_id: int) -> str:
     """
     Create md-file for overall precision@k scores with methods "rank" and "score"
-    :param overall_ranks:
-    :param individual_ranks:
-    :param subject_id:
-    :return:
+    :param overall_ranks: Dictionary with overall-ranks
+    :param individual_ranks: Dictionary with individual ranks
+    :param subject_id: Specify subject-id
+    :return: String with MD-text
     """
     text = "### Rank table for subject " + str(subject_id) + "\n"
     text += "| Subject | BVP | EDA | ACC | TEMP | Overall |" + "\n"
@@ -91,12 +91,12 @@ def create_md_ranks(overall_ranks, individual_ranks, subject_id) -> str:
     return text
 
 
-def bold_maximum_precision(precision_comb, value):
+def bold_maximum_precision(precision_comb: Dict[str, float], value: float) -> str:
     """
     Bold maximum precision@k
-    :param precision_comb:
-    :param value:
-    :return:
+    :param precision_comb: Dictionary with precisions for sensor-combinations
+    :param value: Given value
+    :return: Bolded text
     """
     precision_list = list()
     for k, v in precision_comb.items():
