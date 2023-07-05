@@ -24,7 +24,7 @@ def calculate_window_precisions(rank_method: str = "score", average_method: str 
     Calculate precisions per test-proportion ("baseline", "amusement", "stress"), mean over sensors and test-proportions
     :param rank_method: Specify rank-method "score" or "rank" (use beste rank-method)
     :param average_method: Specify averaging-method "mean" or "weighted-mean" (Choose best one)
-    :param sensor_combination: Specify sensor-combination e.g. [["acc", "temp"]] (Choose best on)
+    :param sensor_combination: Specify sensor-combination e.g. [["bvp", "acc", "temp"]] (Choose best on)
     :param subject_ids: Specify subject-ids, if None: all subjects are used
     :param k_list: Specify k parameters; if None: 1, 3, 5 are used
     :return: Dictionary with results
@@ -39,7 +39,7 @@ def calculate_window_precisions(rank_method: str = "score", average_method: str 
     if subject_ids is None:
         subject_ids = get_subject_list()
     if sensor_combination is None:
-        sensor_combination = [["acc", "temp"]]
+        sensor_combination = [["bvp", "acc", "temp"]]
 
     proportion_results_dict = dict()
     for proportion_test in proportions_test:
@@ -83,6 +83,37 @@ def calculate_window_precisions(rank_method: str = "score", average_method: str 
                 results[k].setdefault(proportion, round(sum(precision_class_list), 3))
 
     return results
+
+
+def calculate_best_k_parameters(rank_method: str, average_method: str, sensor_combination: List[List[str]]) \
+        -> Dict[float, int]:
+    """
+    Calculate k-parameters where precision@k == 1
+    :param rank_method: Specify ranking-method ("score" or "rank")
+    :param average_method: Specify class averaging-method ("mean" or "weighted-mean)
+    :param sensor_combination: Specify sensor-combination e.g. [["bvp", "acc", "temp"]] (Choose best on)
+    :return: Dictionary with results
+    """
+    amount_subjects = len(get_subject_list())
+    k_list = list(range(1, amount_subjects + 1))  # List with all possible k parameters
+    results = calculate_window_precisions(k_list=k_list, rank_method=rank_method, average_method=average_method,
+                                          sensor_combination=sensor_combination)
+    best_k_parameters = dict()
+
+    set_method = False
+    for k in results:
+        for method, value in results[k].items():
+            if set_method is False:
+                if value == 1.0:
+                    best_k_parameters.setdefault(method, 1)
+                else:
+                    best_k_parameters.setdefault(method, amount_subjects)
+            elif value == 1.0 and set_method is True:
+                if best_k_parameters[method] > k:
+                    best_k_parameters[method] = k
+        set_method = True
+
+    return best_k_parameters
 
 
 def plot_window_precisions(results: Dict[int, Dict[float, float]], k_list: List[int]):
@@ -159,10 +190,12 @@ def run_window_evaluation(rank_method: str = "score", average_method: str = "wei
     results = calculate_window_precisions(rank_method=rank_method, average_method=average_method,
                                           sensor_combination=sensor_combination)
     best_window = get_best_window_configuration(res=results)
+    best_k_parameters = calculate_best_k_parameters(rank_method=rank_method, average_method=average_method,
+                                                    sensor_combination=sensor_combination)
 
     text = [create_md_precision_windows(rank_method=rank_method, average_method=average_method, results=results,
                                         sensor_combination=list_to_string(input_list=sensor_combination[0]),
-                                        best_window=best_window)]
+                                        best_window=best_window, best_k_parameters=best_k_parameters)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)

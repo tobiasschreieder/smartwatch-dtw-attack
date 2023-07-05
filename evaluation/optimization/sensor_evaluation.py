@@ -108,6 +108,34 @@ def calculate_sensor_precisions(rank_method: str = "score", average_method: str 
     return results
 
 
+def calculate_best_k_parameters(rank_method: str, average_method: str) -> Dict[str, int]:
+    """
+    Calculate k-parameters where precision@k == 1
+    :param rank_method: Specify ranking-method ("score" or "rank")
+    :param average_method: Specify class averaging-method ("mean" or "weighted-mean)
+    :return: Dictionary with results
+    """
+    amount_subjects = len(get_subject_list())
+    k_list = list(range(1, amount_subjects + 1))  # List with all possible k parameters
+    results = calculate_sensor_precisions(k_list=k_list, rank_method=rank_method, average_method=average_method)
+    best_k_parameters = dict()
+
+    set_method = False
+    for k in results:
+        for method, value in results[k].items():
+            if set_method is False:
+                if value == 1.0:
+                    best_k_parameters.setdefault(method, 1)
+                else:
+                    best_k_parameters.setdefault(method, amount_subjects)
+            elif value == 1.0 and set_method is True:
+                if best_k_parameters[method] > k:
+                    best_k_parameters[method] = k
+        set_method = True
+
+    return best_k_parameters
+
+
 def get_best_sensor_configuration(res: Dict[int, Dict[str, float]], printable_version: bool = False) \
         -> Union[str, List[List[str]]]:
     """
@@ -157,9 +185,10 @@ def run_sensor_evaluation(rank_method: str = "score", average_method: str = "wei
     """
     results = calculate_sensor_precisions(rank_method=rank_method, average_method=average_method)
     best_sensors = get_best_sensor_configuration(res=results, printable_version=True)
+    best_k_parameters = calculate_best_k_parameters(rank_method=rank_method, average_method=average_method)
 
     text = [create_md_precision_sensors(rank_method=rank_method, average_method=average_method, results=results,
-                                        best_sensors=best_sensors)]
+                                        best_sensors=best_sensors, best_k_parameters=best_k_parameters)]
 
     # Save MD-File
     os.makedirs(EVALUATIONS_PATH, exist_ok=True)

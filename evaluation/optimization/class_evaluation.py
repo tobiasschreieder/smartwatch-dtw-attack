@@ -143,17 +143,18 @@ def calculate_best_k_parameters(rank_method: str) -> Dict[str, int]:
     results = calculate_class_precisions(k_list=k_list, rank_method=rank_method)
     best_k_parameters = dict()
 
+    set_method = False
     for k in results:
-        set_method = False
         for method, value in results[k].items():
             if set_method is False:
                 if value == 1.0:
                     best_k_parameters.setdefault(method, 1)
                 else:
                     best_k_parameters.setdefault(method, amount_subjects)
-                set_method = True
             elif value == 1.0 and set_method is True:
-                best_k_parameters.setdefault(method, k)
+                if best_k_parameters[method] > k:
+                    best_k_parameters[method] = k
+        set_method = True
 
     return best_k_parameters
 

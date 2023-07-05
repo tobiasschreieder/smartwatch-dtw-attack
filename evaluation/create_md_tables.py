@@ -233,13 +233,14 @@ def create_md_precision_classes(rank_method: str, results: Dict[int, Dict[str, f
 
 
 def create_md_precision_sensors(rank_method: str, average_method: str, results: Dict[int, Dict[str, float]],
-                                best_sensors: str) -> str:
+                                best_sensors: str, best_k_parameters: Dict[str, int]) -> str:
     """
     Create text for MD-file with results of sensor-combination evaluation
     :param rank_method: Specify rank-method ("score" or "rank")
     :param average_method: Specify averaging-method ("mean" or "weighted-mean)
     :param results: Results with precision values per class
     :param best_sensors: Specify best sensor-combination
+    :param best_k_parameters: Specify best k parameters
     :return: String with MD text
     """
     text = "# Evaluation of Sensor-Combinations: \n"
@@ -262,11 +263,17 @@ def create_md_precision_sensors(rank_method: str, average_method: str, results: 
             text += str(results[k][sensor]) + " | "
         text += "\n"
 
+    text += "| max@k | "
+    for k in best_k_parameters.values():
+        text += "k = " + str(k) + " | "
+    text += "\n"
+
     return text
 
 
 def create_md_precision_windows(rank_method: str, average_method: str, sensor_combination: str,
-                                results: Dict[int, Dict[float, float]], best_window: float) -> str:
+                                results: Dict[int, Dict[float, float]], best_window: float,
+                                best_k_parameters: Dict[float, int]) -> str:
     """
     Create text for MD-file with results of window (test-proportion) evaluation
     :param rank_method: Specify rank-method ("score" or "rank")
@@ -274,6 +281,7 @@ def create_md_precision_windows(rank_method: str, average_method: str, sensor_co
     :param sensor_combination: Specify sensor-combination e.g. "acc+temp" (Choose best one)
     :param results: Results with precision values per class
     :param best_window: Specify best window
+    :param best_k_parameters: Specify best k parameters
     :return: String with MD text
     """
     text = "# Evaluation of Windows: \n"
@@ -296,6 +304,11 @@ def create_md_precision_windows(rank_method: str, average_method: str, sensor_co
         for window in results[k]:
             text += str(results[k][window]) + " | "
         text += "\n"
+
+    text += "| max@k | "
+    for k in best_k_parameters.values():
+        text += "k = " + str(k) + " | "
+    text += "\n"
 
     return text
 
