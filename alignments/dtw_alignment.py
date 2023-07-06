@@ -88,8 +88,8 @@ def run_dtw_alignments(resample_factor: float = 2, subject_ids: List[int] = None
 
         # Save results as json
         try:
-            path = os.path.join(MAIN_PATH, "/out")  # add /out to path
-            path = os.path.join(path, "/alignments")  # add /alignments to path
+            path = os.path.join(MAIN_PATH, "out")  # add /out to path
+            path = os.path.join(path, "alignments")  # add /alignments to path
             path = os.path.join(path, "complete")  # add /complete to path
             os.makedirs(path, exist_ok=True)
 
