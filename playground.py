@@ -1,6 +1,6 @@
 from alignments.dtw_attack import run_calculations
 from alignments.dtw_alignment import run_dtw_alignments
-from evaluation.analysis.exploratory_data_analysis import plot_subject_data
+from evaluation.analysis.exploratory_data_analysis import plot_subject_data, plot_alignment_heatmap
 from evaluation.evaluation import subject_evaluation, precision_evaluation, run_optimization_evaluation, \
     run_calculate_max_precision
 from evaluation.optimization.class_evaluation import run_class_evaluation
@@ -27,6 +27,9 @@ Example Calculations
 
 """4. Calculate DTW-alignments over complete sensor signals and save results to /out/alignments/complete"""
 # run_dtw_alignments(resample_factor=30)
+
+"""5. Plot DTW alignment subject distance heatmap and save plot to /out/eda"""
+# plot_alignment_heatmap()
 
 """5. Evaluate DTW-alignment results per subject; save MD-tables with distance and rank results and realistic-rank-plots
 to /out/subject-plots"""

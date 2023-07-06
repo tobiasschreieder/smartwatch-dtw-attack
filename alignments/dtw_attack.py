@@ -10,8 +10,8 @@ import json
 MAIN_PATH = os.path.abspath(os.getcwd())
 DATA_PATH = os.path.join(MAIN_PATH, "dataset")  # add /dataset to path
 
-CLASSES = ["baseline", "amusement", "stress"]
-PROPORTIONS_TEST = [0.001, 0.005, 0.01, 0.02, 0.05, 0.1]
+CLASSES = ["baseline", "amusement", "stress"]  # All available classes
+PROPORTIONS_TEST = [0.001, 0.005, 0.01, 0.02, 0.05, 0.1]  # All calculated window-sizes (test-proportions)
 
 
 def get_classes() -> List[str]:
@@ -25,7 +25,7 @@ def get_classes() -> List[str]:
 def get_proportions() -> List[float]:
     """
     Get test-proportions
-    :return: List with all test-poportions
+    :return: List with all test-proportions
     """
     return PROPORTIONS_TEST
 
@@ -109,7 +109,7 @@ def create_subject_data(method: str, proportion_test: float, subject_id: int) \
 
 def test_max_proportions(proportions: List[float], safety_proportion: float = 0.05) -> bool:
     """
-    Test all given test proportions if they are vaild
+    Test all given test proportions if they are valid
     :param proportions: List with all test proportions
     :param safety_proportion:
     :return: Boolean -> False if there is at least one wrong proportion
