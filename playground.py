@@ -26,7 +26,7 @@ Example Calculations
 # run_calculations(methods=["baseline", "amusement", "stress"], proportions=[0.15])
 
 """4. Calculate DTW-alignments over complete sensor signals and save results to /out/alignments/complete"""
-# run_dtw_alignments(resample_factor=40)
+# run_dtw_alignments(resample_factor=4)
 
 """5. Plot DTW alignment subject distance heatmap and save plot to /out/eda"""
 # plot_alignment_heatmap()

@@ -68,7 +68,7 @@ def plot_alignment_heatmap(normalized_data: bool = True):
         for j in range(len(subject_ids)):
             text = ax.text(j, i, "", ha="center", va="center", color="w")
 
-    ax.set_title("DTW: Subject Alignment Heatmap")
+    # ax.set_title("DTW: Subject Alignment Heatmap")
     fig.tight_layout()
     plt.colorbar(im)
 
