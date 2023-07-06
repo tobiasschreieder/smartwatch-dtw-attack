@@ -3,6 +3,7 @@ from preprocessing.process_results import load_complete_alignment_results
 
 import os
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import AxesGrid
 import numpy as np
 
 
@@ -42,8 +43,13 @@ def plot_alignment_heatmap(normalized_data: bool = True):
     subject_ids = get_subject_list()
     data = dict()
     data_array = list()
+
+    # Load data
     for subject_id in subject_ids:
         results = load_complete_alignment_results(subject_id=subject_id, normalized_data=normalized_data)
+        # Change distance to similarity
+        for res in results:
+            results[res] = 1 - results[res]
         data.setdefault(subject_id, list(results.values()))
 
     for subject_id in data:
@@ -51,23 +57,25 @@ def plot_alignment_heatmap(normalized_data: bool = True):
 
     data_array = np.array(data_array)
 
+    # Plot heatmap
     fig, ax = plt.subplots()
-    im = ax.imshow(data_array)
-    ax.set_xticks(np.arange(len(subject_ids)), labels=subject_ids)
-    ax.set_yticks(np.arange(len(subject_ids)), labels=subject_ids)
-
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
-             rotation_mode="anchor")
+    im = ax.imshow(data_array, cmap=plt.cm.Blues)
+    axis = list(range(1, len(subject_ids) + 1))
+    ax.set_xticks(np.arange(len(axis)), labels=axis)
+    ax.set_yticks(np.arange(len(axis)), labels=axis)
 
     for i in range(len(subject_ids)):
         for j in range(len(subject_ids)):
-            text = ax.text(j, i, data_array[i, j], ha="center", va="center", color="w")
+            text = ax.text(j, i, "", ha="center", va="center", color="w")
 
-    ax.set_title("DTW-Alignment: subject distance heatmap")
+    ax.set_title("DTW: Subject Alignment Heatmap")
     fig.tight_layout()
+    plt.colorbar(im)
 
+    # Save heatmap as png
     try:
-        plt.savefig(fname=EDA_PATH + "/eda_dtw_alignment_heatmap.png", dpi=2000)
+        plt.savefig(fname=EDA_PATH + "/eda_dtw_alignment_heatmap.png")
 
     except FileNotFoundError:
         print("FileNotFoundError: Invalid directory structure!")
+

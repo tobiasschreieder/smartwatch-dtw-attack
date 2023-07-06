@@ -87,7 +87,7 @@ def load_complete_alignment_results(subject_id: int, normalized_data: bool = Tru
         if normalized_data:
             path = path + "/SW-DTW_results_normalized_complete_S" + str(subject_id) + ".json"
         else:
-            path = path + "/SW-DTW_results_standard_S" + str(subject_id) + ".json"
+            path = path + "/SW-DTW_results_standard_complete_S" + str(subject_id) + ".json"
 
         f = open(path, "r")
         results = json.loads(f.read())
