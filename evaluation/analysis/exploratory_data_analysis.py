@@ -68,13 +68,14 @@ def plot_alignment_heatmap(normalized_data: bool = True):
         for j in range(len(subject_ids)):
             text = ax.text(j, i, "", ha="center", va="center", color="w")
 
-    # ax.set_title("DTW: Subject Alignment Heatmap")
     fig.tight_layout()
     plt.colorbar(im)
+    plt.rc("font", size=24)
 
     # Save heatmap as png
     try:
-        plt.savefig(fname=EDA_PATH + "/eda_dtw_alignment_heatmap.png")
+        plt.savefig(fname=EDA_PATH + "/eda_dtw_alignment_heatmap.pdf", format="pdf", transparent=True,
+                    bbox_inches="tight")
 
     except FileNotFoundError:
         print("FileNotFoundError: Invalid directory structure!")
