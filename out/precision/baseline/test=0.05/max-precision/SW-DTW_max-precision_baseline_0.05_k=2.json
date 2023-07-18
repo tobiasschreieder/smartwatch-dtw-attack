@@ -1,0 +1,1 @@
+{"precision": 0.667, "weights": [{"bvp": 0.0, "eda": 0.1, "acc": 0.7, "temp": 0.2}, {"bvp": 0.1, "eda": 0.1, "acc": 0.6, "temp": 0.2}, {"bvp": 0.4, "eda": 0.0, "acc": 0.5, "temp": 0.1}, {"bvp": 0.5, "eda": 0.0, "acc": 0.4, "temp": 0.1}]}
