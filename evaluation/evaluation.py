@@ -54,9 +54,11 @@ def plot_realistic_ranks(path: os.path, method: str, proportion_test: float):
 
     real_ranks = [real_ranks_1, real_ranks_2]
     fig1, ax1 = plt.subplots()
-    ax1.set_title('Rank boxplot')
-    ax1.boxplot(real_ranks, notch=False)
-    plt.savefig(fname=path)
+    ax1.set_title('Realistic-Rank boxplot')
+    plt.ylabel("Ranks")
+    plt.xlabel("Methods: 1 = rank | 2 = score")
+    ax1.boxplot(real_ranks)
+    plt.savefig(fname=path, format="pdf")
     plt.close()
 
 
@@ -115,7 +117,7 @@ def subject_evaluation(plot_ranks: bool = True, methods: List[str] = None, propo
             # Plot realistic ranks as boxplot
             if plot_ranks:
                 plot_realistic_ranks(path=path + "/SW-DTW_realistic-rank-plot_" + str(method) + "_" +
-                                     str(proportion_test) + ".png", method=method, proportion_test=proportion_test)
+                                     str(proportion_test) + ".pdf", method=method, proportion_test=proportion_test)
 
             print("SW-DTW realistic-rank-plot for method = " + str(method) + " and test-proportion = " +
                   str(proportion_test) + " saved at: " + str(path))

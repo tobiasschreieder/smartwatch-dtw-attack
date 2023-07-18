@@ -3,7 +3,6 @@ from preprocessing.process_results import load_complete_alignment_results
 
 import os
 import matplotlib.pyplot as plt
-from mpl_toolkits.axes_grid1 import AxesGrid
 import numpy as np
 
 
@@ -27,6 +26,7 @@ def plot_subject_data():
         plt.xlabel('index | time')
 
         try:
+            os.makedirs(EDA_PATH, exist_ok=True)
             plt.savefig(fname=EDA_PATH + "/eda_plot_S" + str(subject) + ".png")
 
         except FileNotFoundError:
@@ -74,9 +74,11 @@ def plot_alignment_heatmap(normalized_data: bool = True):
 
     # Save heatmap as png
     try:
+        os.makedirs(EDA_PATH, exist_ok=True)
         plt.savefig(fname=EDA_PATH + "/eda_dtw_alignment_heatmap.pdf", format="pdf", transparent=True,
                     bbox_inches="tight")
 
     except FileNotFoundError:
         print("FileNotFoundError: Invalid directory structure!")
 
+    plt.close()

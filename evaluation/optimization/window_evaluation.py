@@ -132,7 +132,7 @@ def plot_window_precisions(results: Dict[int, Dict[float, float]], k_list: List[
     plt.legend()
 
     try:
-        plt.savefig(fname=EVALUATIONS_PATH + "/SW-DTW_evaluation_windows.png")
+        plt.savefig(fname=EVALUATIONS_PATH + "/SW-DTW_evaluation_windows.pdf", format="pdf")
 
     except FileNotFoundError:
         print("FileNotFoundError: Invalid directory structure!")
