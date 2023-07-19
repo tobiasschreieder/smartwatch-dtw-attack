@@ -1,15 +1,15 @@
 # Evaluation overall: 
 * Calculated with rank-method: 'score' 
 * Calculated with averaging-method: 'weighted-mean' 
-* Calculated with sensor-combination: 'bvp+eda+acc+temp' 
+* Calculated with sensor-combination: 'bvp+acc' 
 * Calculated with window-size: '0.0001' 
 ## Precision@k table: 
 | k | DTW-results | sensor weighted | random guess |
 |---|---|---|---|
-| 1 | 0.49 | 0.706 | 0.067 |
-| 3 | 0.726 | 0.913 | 0.2 |
-| 5 | 0.827 | 0.964 | 0.333 |
-| max@k | k = 12 | k = 6 | k = 15 |
+| 1 | 0.51 | 0.706 | 0.067 |
+| 3 | 0.776 | 0.913 | 0.2 |
+| 5 | 0.867 | 0.964 | 0.333 |
+| max@k | k = 11 | k = 6 | k = 15 |
 ## Sensor-weighting tables: 
 ### Table for method: 'baseline': 
 | k | acc | bvp | eda | temp | 

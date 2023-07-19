@@ -39,7 +39,7 @@ def calculate_window_precisions(rank_method: str = "score", average_method: str 
     if subject_ids is None:
         subject_ids = get_subject_list()
     if sensor_combination is None:
-        sensor_combination = [["bvp", "acc", "temp"]]
+        sensor_combination = [["bvp", "eda", "acc", "temp"]]
 
     proportion_results_dict = dict()
     for proportion_test in proportions_test:
@@ -185,7 +185,7 @@ def run_window_evaluation(rank_method: str = "score", average_method: str = "wei
     :param sensor_combination: Specify sensor-combination e.g. [["acc", "temp"]] (Choose best on)
     """
     if sensor_combination is None:
-        sensor_combination = [["acc", "temp"]]
+        sensor_combination = [["bvp", "eda", "acc", "temp"]]
 
     results = calculate_window_precisions(rank_method=rank_method, average_method=average_method,
                                           sensor_combination=sensor_combination)
