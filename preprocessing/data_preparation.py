@@ -22,6 +22,8 @@ class Subject:
     """
     Subject of the WESAD dataset.
     Subject Class inspired by: https://github.com/WJMatthew/WESAD
+    Preprocessing based on Gil-Martin et al. 2022: Human stress detection with wearable sensors using convolutional
+    neural networks: https://ieeexplore.ieee.org/document/9669993
     """
     def __init__(self, data_path, subject_number):
         """
